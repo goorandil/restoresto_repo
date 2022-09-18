@@ -1,0 +1,223 @@
+{
+  "project_info": {
+    "project_number": "72969643027",
+    "firebase_url": "https://restaurant-menu-244ab.firebaseio.com",
+    "project_id": "restaurant-menu-244ab",
+    "storage_bucket": "restaurant-menu-244ab.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:72969643027:android:0b7f6da7d2251c2aa64be6",
+        "android_client_info": {
+          "package_name": "com.bingkaiapp.nashafood"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "72969643027-t018g69p85t9oufbsp07nvaalqjvdduv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bingkaiapp.nashafood",
+            "certificate_hash": "802b40246cc706cd15401c4577ccd5944c3300b1"
+          }
+        },
+        {
+          "client_id": "72969643027-q1ouga9os5u35cur3o7fjg3t15kg96h4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAdw9Prpz9GRLXB9LBk0vGafX2FSffdyd4"
+        },
+        {
+          "current_key": "AIzaSyAc3W4bg8foBHLb3NzV2UF86bvCXZJYEM8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "72969643027-q1ouga9os5u35cur3o7fjg3t15kg96h4.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "72969643027-mijf1kjf2o86s58totfrrd96rhl7p0hj.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.restorestoRepo"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:72969643027:android:27c3295eb2cd2385a64be6",
+        "android_client_info": {
+          "package_name": "com.bingkaiapp.restaurantmenu"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "72969643027-g23djh2gve73e86ka7gvispaf7dj9f6d.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bingkaiapp.restaurantmenu",
+            "certificate_hash": "65e7b17dacebc9afe6f5b63b044cd35ef052299b"
+          }
+        },
+        {
+          "client_id": "72969643027-uhioqke5s36u3jjfsad8oehsiaeni1ts.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bingkaiapp.restaurantmenu",
+            "certificate_hash": "802b40246cc706cd15401c4577ccd5944c3300b1"
+          }
+        },
+        {
+          "client_id": "72969643027-q1ouga9os5u35cur3o7fjg3t15kg96h4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAdw9Prpz9GRLXB9LBk0vGafX2FSffdyd4"
+        },
+        {
+          "current_key": "AIzaSyAc3W4bg8foBHLb3NzV2UF86bvCXZJYEM8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "72969643027-q1ouga9os5u35cur3o7fjg3t15kg96h4.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "72969643027-mijf1kjf2o86s58totfrrd96rhl7p0hj.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.restorestoRepo"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:72969643027:android:78141bbe612d1cfaa64be6",
+        "android_client_info": {
+          "package_name": "com.bingkaiapp.restoresto"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "72969643027-4f17bu05halv0h1oo7u85ddv01p592c4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bingkaiapp.restoresto",
+            "certificate_hash": "c6fe30bc35122fed2384fe4bf865af65235b8063"
+          }
+        },
+        {
+          "client_id": "72969643027-djhel1r1nvg8emn5t0uld101dh3ufopf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bingkaiapp.restoresto",
+            "certificate_hash": "802b40246cc706cd15401c4577ccd5944c3300b1"
+          }
+        },
+        {
+          "client_id": "72969643027-q1ouga9os5u35cur3o7fjg3t15kg96h4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAdw9Prpz9GRLXB9LBk0vGafX2FSffdyd4"
+        },
+        {
+          "current_key": "AIzaSyAc3W4bg8foBHLb3NzV2UF86bvCXZJYEM8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "72969643027-q1ouga9os5u35cur3o7fjg3t15kg96h4.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "72969643027-mijf1kjf2o86s58totfrrd96rhl7p0hj.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.restorestoRepo"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:72969643027:android:f7662658f3a6e2eca64be6",
+        "android_client_info": {
+          "package_name": "com.bingkaiapp.restorestoadmin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "72969643027-1hpn8i12a6upb0ate125lfu42c15glfl.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bingkaiapp.restorestoadmin",
+            "certificate_hash": "802b40246cc706cd15401c4577ccd5944c3300b1"
+          }
+        },
+        {
+          "client_id": "72969643027-dg3pskf8se29cc9hqr5vnu44l32k5dl3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bingkaiapp.restorestoadmin",
+            "certificate_hash": "7644f91fb4cba721dac73fe1d11241492b47aa47"
+          }
+        },
+        {
+          "client_id": "72969643027-q1ouga9os5u35cur3o7fjg3t15kg96h4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAdw9Prpz9GRLXB9LBk0vGafX2FSffdyd4"
+        },
+        {
+          "current_key": "AIzaSyAc3W4bg8foBHLb3NzV2UF86bvCXZJYEM8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "72969643027-q1ouga9os5u35cur3o7fjg3t15kg96h4.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "72969643027-mijf1kjf2o86s58totfrrd96rhl7p0hj.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.restorestoRepo"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
