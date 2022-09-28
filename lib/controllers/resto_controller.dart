@@ -25,8 +25,10 @@ class RestoController extends GetxController {
   @override
   Future<void> onInit() async {
     super.onInit();
+    //   DynamicLinkService.createDynamicLink(
+    //     'JV5IT3If9HBTfQ3mWepI', 'CoXBb4XppBqyVkXlMsO3');
     DynamicLinkService.createDynamicLink(
-        'JV5IT3If9HBTfQ3mWepI', 'CoXBb4XppBqyVkXlMsO3');
+        '${userBox.read('restoid')}', '${userBox.read('merchantid')}');
   }
 
   bool hasCameraPermission = false;

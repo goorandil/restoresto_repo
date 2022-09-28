@@ -75,8 +75,6 @@ class CheckoutDb {
 // order admin
     firebaseFirestore
         .collection('orders')
-        .doc("${userBox.read('merchantid')}")
-        .collection('restoid')
         .doc('${userBox.read('restoid')}')
         .collection('order')
         .add(orderData)
@@ -84,7 +82,7 @@ class CheckoutDb {
       // myorder
       firebaseFirestore
           .collection('myorders')
-          .doc("${userBox.read('userid')}")
+          .doc("${firebaseAuth.currentUser!.uid}")
           .collection('restoid')
           .doc('${userBox.read('restoid')}')
           .collection('myorder')
@@ -119,8 +117,6 @@ class CheckoutDb {
         };
         firebaseFirestore
             .collection('orderdetails')
-            .doc("${userBox.read('merchantid')}")
-            .collection('restoid')
             .doc('${userBox.read('restoid')}')
             .collection('orderid')
             .doc(value.id)
@@ -129,7 +125,7 @@ class CheckoutDb {
             .then((valuex) {
           firebaseFirestore
               .collection('myorders')
-              .doc("${userBox.read('userid')}")
+              .doc("${firebaseAuth.currentUser!.uid}")
               .collection('restoid')
               .doc('${userBox.read('restoid')}')
               .collection('myorder')

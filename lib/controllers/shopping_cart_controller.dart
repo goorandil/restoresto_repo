@@ -20,6 +20,7 @@ import '../utils/dynamic_link_service.dart';
 class ShoppingCartController extends GetxController {
   static ShoppingCartController get to => Get.find<ShoppingCartController>();
 
+  RxString usernamex = ''.obs;
   RxInt sumtotalx = 0.obs;
   final saldo = NumberFormat.currency(
       locale: 'id_ID', customPattern: '#,###', symbol: 'Rp.', decimalDigits: 0);
@@ -28,7 +29,6 @@ class ShoppingCartController extends GetxController {
   Future<void> onInit() async {
     super.onInit();
     sumtotalx.value = 0;
-    getUserData();
   }
 
   getSumTotal() {
@@ -54,9 +54,9 @@ class ShoppingCartController extends GetxController {
       userBox.write('useraddress', value.get('userAddress'));
       userBox.write('userPhone', value.get('userPhone'));
       userBox.write('userid', value.id);
-
-      print('userEmail ${value.get('userEmail')}');
-      print('userName ${value.get('userName')}');
+      usernamex.value = value.get('userName');
+      print('getUserData userEmail ${value.get('userEmail')}');
+      print('getUserData userName ${value.get('userName')}');
     });
   }
 

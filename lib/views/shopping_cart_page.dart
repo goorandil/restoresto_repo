@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:restoresto_repo/database/main_db.dart';
 import 'package:restoresto_repo/helper/firebase_auth_constants.dart';
 import 'package:restoresto_repo/views/checkout_page.dart';
+import 'package:restoresto_repo/views/profile_page.dart';
 
 import '../controllers/main_controller.dart';
 import '../controllers/resto_controller.dart';
@@ -408,16 +409,63 @@ class ShoppingCartPage extends StatelessWidget {
                                           '${controller.getSumTotal()}');
                                       print(
                                           "Tapped shopcart ${MainController.to.emailstatusx.value}");
+
                                       MainController.to.emailstatusx.value
-                                          ? Get.to(() => CheckoutPage())
+                                          ? controller.getUserData()
+                                          : null;
+                                      userBox.read('username') != ''
+                                          ? MainController.to.emailstatusx.value
+                                              ? Get.to(() => CheckoutPage())
+                                              : Get.defaultDialog(
+                                                  titlePadding:
+                                                      const EdgeInsets.all(15),
+                                                  contentPadding:
+                                                      const EdgeInsets.all(15),
+                                                  title:
+                                                      'You are not logged in yet'
+                                                          .tr,
+                                                  content:
+                                                      Text('Login now?'.tr),
+                                                  //  backgroundColor: Colors.teal,
+
+                                                  radius: 30,
+                                                  actions: <Widget>[
+                                                    TextButton(
+                                                      child: Text(
+                                                        'Cancel'.tr,
+                                                        style: TextStyle(
+                                                            color: GlobalVar.to
+                                                                .primaryText),
+                                                      ),
+                                                      onPressed: () {
+                                                        Get.back();
+                                                      },
+                                                    ),
+                                                    TextButton(
+                                                      child: Text(
+                                                        'Yes'.tr,
+                                                        style: TextStyle(
+                                                            color: GlobalVar.to
+                                                                .primaryText),
+                                                      ),
+                                                      onPressed: () {
+                                                        Get.back();
+                                                        // klik login cek uid punya email ngak
+                                                        MainController.to
+                                                            .checkAuth2();
+                                                      },
+                                                    ),
+                                                  ],
+                                                )
                                           : Get.defaultDialog(
                                               titlePadding:
                                                   const EdgeInsets.all(15),
                                               contentPadding:
                                                   const EdgeInsets.all(15),
-                                              title: 'You are not logged in yet'
-                                                  .tr,
-                                              content: Text('Login now?'.tr),
+                                              title:
+                                                  'Your profile is not complete'
+                                                      .tr,
+                                              content: Text('Complete now?'.tr),
                                               //  backgroundColor: Colors.teal,
 
                                               radius: 30,
@@ -443,8 +491,7 @@ class ShoppingCartPage extends StatelessWidget {
                                                   onPressed: () {
                                                     Get.back();
                                                     // klik login cek uid punya email ngak
-                                                    MainController.to
-                                                        .checkAuth2();
+                                                    Get.to(() => ProfilePage());
                                                   },
                                                 ),
                                               ],

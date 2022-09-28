@@ -19,7 +19,7 @@ class MyorderDb {
         .collection("restoid")
         .doc('${userBox.read('restoid')}')
         .collection('myorder')
-        .where('orderStatus', isNotEqualTo: 'Selesai')
+        .where('historyStatus', isEqualTo: false)
         .snapshots();
   }
 
@@ -32,7 +32,7 @@ class MyorderDb {
         .collection("restoid")
         .doc('${userBox.read('restoid')}')
         .collection('myorder')
-        .where('orderStatus', isEqualTo: 'Selesai')
+        .where('historyStatus', isEqualTo: true)
         .snapshots();
   }
 

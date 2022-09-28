@@ -73,6 +73,10 @@ class Languages extends Translations {
           'Share App': 'Share App',
           'Terms and conditions': 'Terms and conditions',
           'Privacy Policy': 'Privacy Policy',
+
+          'Your profile is not complete': 'Your profile is not complete',
+
+          'Complete Now?': 'Complete Now?',
         },
         'id_ID': {
           'greeting': 'halo',
@@ -137,6 +141,8 @@ class Languages extends Translations {
           'Share App': 'Bagikan App',
           'Terms and conditions': 'Syarat & Ketentuan',
           'Privacy Policy': 'Kebijakan Privasi',
+          'Your profile is not complete': 'Profil kamu belum lengkap',
+          'Complete Now?': 'Lengkapi sekarang?',
         },
       };
 }

@@ -158,24 +158,17 @@ class MainPage extends StatelessWidget {
                                   Expanded(
                                       child: Container(
                                     alignment: Alignment.centerRight,
-                                    child: ElevatedButton(
-                                      onPressed: () =>
-                                          Get.to(() => RestoPage()),
-                                      style: ElevatedButton.styleFrom(
-                                          elevation: 5,
-                                          primary: GlobalVar.to.primaryButton,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(10.0),
-                                          ),
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 15, vertical: 0),
-                                          textStyle: const TextStyle(
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.bold)),
-
-                                      child: Text('Change'.tr),
-                                      // obs
+                                    child: TextButton(
+                                      child: Text(
+                                        'Change'.tr,
+                                        style: TextStyle(
+                                            fontSize: 12, color: Colors.red),
+                                      ),
+                                      style: TextButton.styleFrom(
+                                          fixedSize: Size.fromHeight(150)),
+                                      onPressed: () {
+                                        Get.to(() => RestoPage());
+                                      },
                                     ),
                                   )),
                                   const SizedBox(

@@ -96,10 +96,16 @@ class MainDb {
         } else {
           print('restoid addNewUser');
           //     addNewUser();
-          return Text(
-            'Restaurant not selected'.tr,
-            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-          );
+          return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  'Restaurant not selected'.tr,
+                  style: TextStyle(
+                      color: Colors.black, fontWeight: FontWeight.bold),
+                )
+              ]);
         }
       });
 

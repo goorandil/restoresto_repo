@@ -263,13 +263,23 @@ class MyorderController extends GetxController {
                         flex: 1,
                         child: Align(
                           alignment: Alignment.topRight,
-                          child: Text(
-                            '${snapshot.data!.docs[index]['tableNumber']}',
-                            style: const TextStyle(
-                                fontSize: 20,
-                                color: Colors.red,
-                                fontWeight: FontWeight.bold),
-                          ),
+                          child:
+                              '${snapshot.data!.docs[index]['tableNumber']}' !=
+                                      'null'
+                                  ? Text(
+                                      '${snapshot.data!.docs[index]['tableNumber']}',
+                                      style: const TextStyle(
+                                          fontSize: 20,
+                                          color: Colors.red,
+                                          fontWeight: FontWeight.bold),
+                                    )
+                                  : Text(
+                                      ' -',
+                                      style: const TextStyle(
+                                          fontSize: 20,
+                                          color: Colors.red,
+                                          fontWeight: FontWeight.bold),
+                                    ),
                         ),
                       )
                     ],
