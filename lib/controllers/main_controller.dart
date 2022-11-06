@@ -18,6 +18,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../database/main_db.dart';
 import '../helper/global_var.dart';
 import '../utils/dynamic_link_service.dart';
+import '../views/resto_page.dart';
 
 class MainController extends GetxController {
   static MainController get to => Get.find<MainController>();
@@ -25,7 +26,7 @@ class MainController extends GetxController {
 
   RxString logOut = 'Logout'.tr.obs;
   RxString deeplink = ''.obs;
-  RxString restoidx = 'null'.obs;
+  RxString merchantidx = 'null'.obs;
   RxString ordertotal = '0'.obs;
 
   RxInt qty = 1.obs;
@@ -40,7 +41,7 @@ class MainController extends GetxController {
   RxString categorynamex = ''.obs;
 
   RxBool emailstatusx = false.obs;
-  RxList list = [].obs;
+
   var userCredential;
   var tabIndex = 0;
   void changeTabIndex(int index) {
@@ -58,17 +59,140 @@ class MainController extends GetxController {
   @override
   Future<void> onInit() async {
     super.onInit();
-    list.clear();
-    // cek apakah user uid nya udah punya email belum
-    // karena anonimus
-    checkAuth();
     Get.put(GlobalVar());
-    getDeepLink();
+    GlobalVar.to.categorylistx.clear();
 
+    getDeepLink();
+    MainDb.getUserData();
+    MainDb.getMerchantData();
     // MainDb.migrateCat();
     // MainDb.migrateMenu();
     // MainDb.migrateResto();
   }
+
+  getUserMerchant() async => firebaseFirestore
+          .collection("users")
+          .doc(firebaseAuth.currentUser!.uid)
+          .get()
+          .then((value) {
+        if (value.exists) {
+          if (value.data().toString().contains('merchantID') != null) {
+            return SizedBox(
+              height: 90,
+              child: Card(
+                color: GlobalVar.to.primaryCard,
+                elevation: 5,
+                clipBehavior: Clip.antiAlias,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child: Container(
+                  padding: EdgeInsets.all(15.0),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          flex: 1,
+                          child: Obx(() => GlobalVar
+                                  .to.merchantimageurlx.value.isNotEmpty
+                              ? ClipRRect(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                  child: Image.network(
+                                      GlobalVar.to.merchantimageurlx.value,
+                                      width: 45.0,
+                                      fit: BoxFit.fitWidth,
+                                      loadingBuilder: (BuildContext context,
+                                          Widget child,
+                                          ImageChunkEvent? loadingProgress) {
+                                    if (loadingProgress == null) {
+                                      return child;
+                                    }
+                                    return Center(
+                                      child: CircularProgressIndicator(),
+                                    );
+                                  }))
+                              : SizedBox()),
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Expanded(
+                            flex: 3,
+                            child: Obx(() => GlobalVar
+                                    .to.merchantimageurlx.value.isNotEmpty
+                                ? Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.end,
+                                          children: [
+                                            Expanded(
+                                              flex: 2,
+                                              child: Align(
+                                                alignment: Alignment.centerLeft,
+                                                child: Text(
+                                                  GlobalVar
+                                                      .to.merchantnamex.value,
+                                                  style: const TextStyle(
+                                                      color: Colors.black,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                        Row(
+                                          children: [
+                                            Expanded(
+                                              flex: 2,
+                                              child: Align(
+                                                alignment: Alignment.centerLeft,
+                                                child: Text(
+                                                  GlobalVar.to.merchantaddressx
+                                                      .value,
+                                                  style: const TextStyle(
+                                                      color: Colors.black,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      ])
+                                : SizedBox())),
+                        Expanded(
+                          flex: 1,
+                          child: Align(
+                              alignment: Alignment.topRight,
+                              child: TextButton(
+                                child: Text(
+                                  'Change'.tr,
+                                  style: TextStyle(
+                                      fontSize: 12, color: Colors.red),
+                                ),
+                                style: TextButton.styleFrom(
+                                    fixedSize: Size.fromHeight(150)),
+                                onPressed: () {
+                                  Get.to(() => RestoPage());
+                                },
+                              )),
+                        ),
+                      ]),
+                ),
+              ),
+            );
+          } else {
+            return Text("Loading...");
+          }
+        } else {
+          return Text("Loading...");
+        }
+      });
 
   @override
   void dispose() {
@@ -117,10 +241,10 @@ class MainController extends GetxController {
               'editmenuimageurl', snapshot.data!.docs[index]['menuImageurl']);
           userBox.write(
               'editmenustatus', snapshot.data!.docs[index]['menuStatus']);
-          userBox.write(
-              'editmenucategory', snapshot.data!.docs[index]['menuCategory']);
-          userBox.write(
-              'editmenucategoryid', snapshot.data!.docs[index]['categoryID']);
+          userBox.write('editmenucategoryname',
+              snapshot.data!.docs[index]['menuCategoryName']);
+          userBox.write('editmenucategoryid',
+              snapshot.data!.docs[index]['menuCategoryID']);
 
           //    selectedState.value = snapshot.data!.docs[index]['categoryID'];
 
@@ -252,6 +376,7 @@ class MainController extends GetxController {
                                     '${snapshot.data!.docs[index]['menuName']}',
                                     style: const TextStyle(
                                         color: Colors.black,
+                                        fontSize: 18,
                                         fontWeight: FontWeight.bold),
                                   ),
                                 ),
@@ -268,6 +393,7 @@ class MainController extends GetxController {
                                     '${snapshot.data!.docs[index]['menuDescription']}',
                                     style: const TextStyle(
                                         color: Colors.black,
+                                        fontSize: 16,
                                         fontWeight: FontWeight.bold),
                                   ),
                                 ),
@@ -281,24 +407,7 @@ class MainController extends GetxController {
                                 child: Align(
                                   alignment: Alignment.centerLeft,
                                   child: Text(
-                                    // '${snapshot.data!.docs[index]['menuPrice']}',
-                                    'Rp. ${saldo.format(int.parse(snapshot.data!.docs[index]['menuPrice'].toString()))}',
-                                    style: const TextStyle(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                              )
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Expanded(
-                                flex: 2,
-                                child: Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text(
-                                    '${snapshot.data!.docs[index]['menuCategory']}',
+                                    '${snapshot.data!.docs[index]['menuCategoryName']}',
                                     style: const TextStyle(
                                         color: Colors.black,
                                         fontWeight: FontWeight.bold),
@@ -332,6 +441,24 @@ class MainController extends GetxController {
                               )
                             ],
                           ),
+                          Row(
+                            children: [
+                              Expanded(
+                                flex: 2,
+                                child: Align(
+                                  alignment: Alignment.centerRight,
+                                  child: Text(
+                                    //  '${snapshot.data!.docs[index]['menuPrice']}',
+                                    'Rp. ${saldo.format(int.parse(snapshot.data!.docs[index]['menuPrice'].toString()))}',
+                                    style: const TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
                         ])),
               ],
             ),
@@ -355,13 +482,6 @@ class MainController extends GetxController {
       merchantidx = deepLink.queryParameters['merchantid'];
       print('MainPage restoid $restoid');
       print('MainPage merchantidx $merchantidx');
-
-      // restoidx.value = '$restoid';
-      //   firebaseFirestore.collection('users').doc(userid).update({
-      //  'eventCode': eventcode,
-      //   });
-      //   checkClassCode(eventcode);
-      //}
     } else {
       print('MainPage deepLink null');
     }
@@ -398,7 +518,7 @@ class MainController extends GetxController {
       'menuprice': '${userBox.read('editmenuprice')}',
       'menuimageurl': '${userBox.read('editmenuimageurl')}',
       'menustatus': '${userBox.read('editmenustatus')}',
-      'menucategory': '${userBox.read('editmenucategory')}',
+      'menucategoryname': '${userBox.read('editmenucategoryname')}',
       'menucategoryid': '${userBox.read('editmenucategoryid')}',
       'qty': '${qty.value}',
       'sumtot': '${sumtot}',
@@ -434,7 +554,6 @@ class MainController extends GetxController {
         // untiuk uid yg aktif
         MainDb.checkEmailUser(user.uid);
         print('checkAuth ${user.uid}');
-        //   MainDb.getResto(user.uid);
       }
     });
   }
@@ -450,7 +569,6 @@ class MainController extends GetxController {
         //  Get.snackbar("Error", "checkAuth ", backgroundColor: Colors.red);
         MainDb.checkEmailUser2(user.uid);
         print('checkAuth2 ${user.uid}');
-        //   MainDb.getResto(user.uid);
       }
     });
   }

@@ -16,8 +16,8 @@ class MyorderDb {
     return firebaseFirestore
         .collection("myorders")
         .doc(firebaseAuth.currentUser!.uid)
-        .collection("restoid")
-        .doc('${userBox.read('restoid')}')
+        .collection("merchantid")
+        .doc('${GlobalVar.to.merchantidx.value}')
         .collection('myorder')
         .where('historyStatus', isEqualTo: false)
         .snapshots();
@@ -29,8 +29,8 @@ class MyorderDb {
     return firebaseFirestore
         .collection("myorders")
         .doc(firebaseAuth.currentUser!.uid)
-        .collection("restoid")
-        .doc('${userBox.read('restoid')}')
+        .collection("merchantid")
+        .doc('${GlobalVar.to.merchantidx.value}')
         .collection('myorder')
         .where('historyStatus', isEqualTo: true)
         .snapshots();
@@ -49,8 +49,8 @@ class MyorderDb {
     return firebaseFirestore
         .collection('myorders')
         .doc(firebaseAuth.currentUser!.uid)
-        .collection("restoid")
-        .doc('${userBox.read('restoid')}')
+        .collection("merchantid")
+        .doc('${GlobalVar.to.merchantidx.value}')
         .collection('myorder')
         .doc('${userBox.read('editmyorderid')}')
         .collection('myorderdetail')

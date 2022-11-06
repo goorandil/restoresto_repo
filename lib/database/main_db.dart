@@ -1,59 +1,82 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:intl/intl.dart';
 import 'package:restoresto_repo/controllers/main_controller.dart';
 
 import '../helper/firebase_auth_constants.dart';
 import '../helper/global_var.dart';
 
 final GoogleSignIn googleSignIn = GoogleSignIn();
+final String tag = 'MainDb ';
 
 class MainDb {
-  static getMenu(String categoryid) {
-    print('getMenu categoryid $categoryid');
-    print('getMenu ${userBox.read('merchantid')}');
-    print('getMenu ${MainController.to.restoidx.value}');
-
-    if (categoryid == '') {
-      return firebaseFirestore
-          .collection("restos")
-          .doc(MainController.to.restoidx.value)
-          .collection('menu')
-          .snapshots();
-    } else {
-      return firebaseFirestore
-          .collection("restos")
-          .doc(MainController.to.restoidx.value)
-          .collection('menu')
-          .where('categoryID', isEqualTo: categoryid)
-          .snapshots();
-    }
-  }
-
-  static Future<Widget> checkUid() async => firebaseFirestore
-          .collection("restos")
-          .doc('${MainController.to.restoidx.value}')
+  static Future<String> getUserMerchant() async => firebaseFirestore
+          .collection("users")
+          .doc(firebaseAuth.currentUser!.uid)
           .get()
           .then((value) {
         if (value.exists) {
-          print('checkUid value.exists');
-          userBox.write('restoid', '${MainController.to.restoidx.value}');
-          userBox.write('merchantid', value.data()!['merchantID']);
-          print('restoid ada ${userBox.read('restoid')}');
-          print('uid ada ${firebaseAuth.currentUser!.uid}');
+          if (value.data().toString().contains('merchantID') != null) {
+            return 'Rp. 0';
+          } else {
+            return 'Rp.';
+          }
+        } else {
+          return "Loading...";
+        }
+      });
 
-          userBox.write('restoname', value.data()!['restoName']);
-          userBox.write('restoaddress', value.data()!['restoAddress']);
+  static getMenu(String categoryid) {
+    print('$tag getMenu categoryid $categoryid');
+    print('$tag getMenu merchantidx ${GlobalVar.to.merchantidx.value}');
+    if (GlobalVar.to.merchantidx.value != '') {
+      print('$tag getMenu merchantidx ada');
+      getMerchantData();
+      getCategories(GlobalVar.to.merchantidx.value);
+      if (categoryid == '') {
+        print('$tag getMenu categoryid kosong');
+        return firebaseFirestore
+            .collection("menus")
+            .doc(GlobalVar.to.merchantidx.value)
+            .collection('menu')
+            .snapshots();
+      } else {
+        print('$tag getMenu categoryid ada');
+        return firebaseFirestore
+            .collection("menus")
+            .doc(GlobalVar.to.merchantidx.value)
+            .collection('menu')
+            .where('menuCategoryID', isEqualTo: categoryid)
+            .snapshots();
+      }
+    } else {
+      print('$tag getMenu merchantidx kosong');
+      return null;
+    }
+  }
+
+  static Future<Widget> checkUidMerchant() async => await firebaseFirestore
+          .collection("merchants")
+          .doc('${GlobalVar.to.merchantidx.value}')
+          .get()
+          .then((value) {
+        if (value.exists) {
+          GlobalVar.to.merchantidx.value = value.id;
+          GlobalVar.to.merchantnamex.value = value.data()!['merchantName'];
+          GlobalVar.to.merchantimageurlx.value =
+              value.data()!['merchantImageurl'];
+          GlobalVar.to.merchantaddressx.value =
+              value.data()!['merchantAddress'];
+
+          print('checkUidMerchant ada ${GlobalVar.to.merchantidx.value}');
+
           return Row(children: [
             ClipRRect(
                 borderRadius: BorderRadius.circular(8.0),
-                child: Image.network('${value.data()!['restoImageurl']}',
+                child: Image.network('${value.data()!['merchantImageurl']}',
                     width: 50.0,
                     fit: BoxFit.fitWidth, loadingBuilder: (BuildContext context,
                         Widget child, ImageChunkEvent? loadingProgress) {
@@ -77,7 +100,7 @@ class MainDb {
                   height: 5,
                 ),
                 Text(
-                  '${value.data()!['restoName']}',
+                  '${value.data()!['merchantName']}',
                   style: const TextStyle(
                       color: Colors.black, fontWeight: FontWeight.bold),
                   textAlign: TextAlign.left,
@@ -85,7 +108,7 @@ class MainDb {
                 Expanded(
                     flex: 1,
                     child: Text(
-                      '${value.data()!['restoAddress']}',
+                      '${value.data()!['merchantAddress']}',
                       style: const TextStyle(
                           color: Colors.black, fontWeight: FontWeight.bold),
                       textAlign: TextAlign.left,
@@ -94,8 +117,8 @@ class MainDb {
             ))
           ]);
         } else {
-          print('restoid addNewUser');
-          //     addNewUser();
+          print('checkUid else');
+
           return Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -143,6 +166,38 @@ class MainDb {
     });
   }
 
+  static updateUidMerchant(String? merchantidx) async {
+    print('updateUidMerchant $merchantidx');
+    print('updateUidMerchant ${firebaseAuth.currentUser!.uid}');
+    return firebaseFirestore
+        .collection("users")
+        .doc(firebaseAuth.currentUser!.uid)
+        .update({
+      'merchantID': merchantidx,
+      'merchantupdatedAt': DateTime.now(),
+      'imerchantupdatedAt': DateTime.now().millisecondsSinceEpoch ~/ 1000,
+      //   'icreatedAt': DateTime.now().millisecondsSinceEpoch ~/ 1000,
+    });
+  }
+
+  static updateMymerchant(String? merchantidx) {
+    print('updateMymerchant $merchantidx');
+    print('updateMymerchant ${firebaseAuth.currentUser!.uid}');
+    GlobalVar.to.merchantidx.value = merchantidx!;
+    getMerchantData();
+    return firebaseFirestore
+        .collection("mymerchants")
+        .doc(firebaseAuth.currentUser!.uid)
+        .collection("mymerchant")
+        .doc(merchantidx)
+        .set({
+      'merchantID': merchantidx,
+      'updatedAt': DateTime.now(),
+      'iupdatedAt': DateTime.now().millisecondsSinceEpoch ~/ 1000,
+      //   'icreatedAt': DateTime.now().millisecondsSinceEpoch ~/ 1000,
+    });
+  }
+
   static void checkUser(String uid) {
     print('checkUser $uid');
     var data = {
@@ -164,8 +219,7 @@ class MainDb {
             .collection("users")
             .doc('${firebaseAuth.currentUser!.uid}')
             .set(data)
-            .then((value) =>
-                {MainDb.getResto('${firebaseAuth.currentUser!.uid}')});
+            .then((value) => {});
       }
     });
   }
@@ -237,45 +291,41 @@ class MainDb {
     });
   }
 
-  static void getResto(String uid) {
+  static void getMymerchant(String uid) {
     firebaseFirestore.collection('users').doc(uid).get().then((value) {
       if (value.exists) {
-        if (value.data().toString().contains('restoID')) {
-          MainController.to.restoidx.value = value.data()!['restoID'];
-          print('1 getResto restoidx ${value.data()!['restoID']}');
-          MainDb.getCat(value.data()!['restoID']);
+        if (value.data().toString().contains('merchantID')) {
         } else {
-          MainController.to.restoidx.value =
-              value.data()!['restoID'].toString();
-          print('2 getResto restoidx ${value.data()!['restoID']}');
+          MainController.to.merchantidx.value =
+              value.data()!['merchantID'].toString();
+          print('2 getMymerchant merchantID ${value.data()!['merchantID']}');
         }
       } else {
-        MainController.to.restoidx.value = 'null';
-        print('3 getResto restoidx empty');
+        MainController.to.merchantidx.value = 'null';
+        print('3 getResto merchantidx empty');
       }
     });
   }
 
-  static void getCat(String restoid) {
+  static Future<void> getCategories(String merchantid) async {
+    print('$tag getCategories merchantid $merchantid');
+
     Map<String, dynamic> someMap;
-    print('getCat restoid $restoid');
-    MainController.to.list.clear();
-    firebaseFirestore
+    await firebaseFirestore
         .collection("categories")
-        .doc(restoid)
+        .doc('${GlobalVar.to.merchantidx.value}')
         .collection('category')
         .get()
         .then((value) {
+      GlobalVar.to.categorylistx.clear();
       value.docs.forEach((element) {
         someMap = {
           'categoryName': '${element.get('categoryName')}',
           'categoryID': '${element.id}',
         };
-        MainController.to.list.add(someMap);
-        print('getCat  someMap $someMap');
+        GlobalVar.to.categorylistx.add(someMap);
       });
     });
-    print('getCat ${MainController.to.list}');
   }
 
   static void checkEmailUser(String uid) {
@@ -386,6 +436,55 @@ class MainDb {
       }
       firebaseFirestore.collection('users').doc(user.user!.uid).update(data);
       MainController.to.emailstatusx.value = true;
+    });
+  }
+
+  static getMerchantData() {
+    print('$tag getMerchantData ${GlobalVar.to.merchantidx.value}');
+    if (GlobalVar.to.merchantidx.value != '') {
+      print('$tag getMerchantData if');
+
+      firebaseFirestore
+          .collection('merchants')
+          .doc('${GlobalVar.to.merchantidx.value}')
+          .get()
+          .then((value) {
+        GlobalVar.to.merchantnamex.value = value.data()!['merchantName'];
+        GlobalVar.to.merchantaddressx.value = value.data()!['merchantAddress'];
+        GlobalVar.to.merchantimageurlx.value =
+            value.data()!['merchantImageurl'];
+
+        print('$tag getMerchantData ${GlobalVar.to.merchantidx.value}');
+        print('$tag getMerchantData ${GlobalVar.to.merchantnamex.value}');
+        print('$tag getMerchantData ${GlobalVar.to.merchantaddressx.value}');
+        print(
+            '$tag getMerchantData merchantimageurlx ${GlobalVar.to.merchantimageurlx.value}');
+        //  GlobalVar.to.categorylistx.clear();
+        //MainDb.getCategories(value.id);
+      });
+    } else {
+      print('$tag getMerchantData else');
+    }
+  }
+
+  static getUserData() {
+    print('getUserData');
+    firebaseFirestore
+        .collection('users')
+        .doc(firebaseAuth.currentUser!.uid)
+        .get()
+        .then((value) {
+      GlobalVar.to.usernamex.value = value.data()!['userName'];
+      GlobalVar.to.useremailx.value = value.data()!['userEmail'];
+      GlobalVar.to.userimageurlx.value = value.data()!['userImageurl'];
+      GlobalVar.to.useridx.value = value.id;
+      GlobalVar.to.merchantidx.value = value.data()!['merchantID'];
+
+      print('getUserData merchantID ${value.data()!['merchantID']}');
+      print('getUserData userName ${value.data()!['userName']}');
+      print('getUserData userEmail ${value.data()!['userEmail']}');
+      print('getUserData userImageurl ${value.data()!['userImageurl']}');
+      print('getUserData useridx ${value.id}');
     });
   }
 

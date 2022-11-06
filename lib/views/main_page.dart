@@ -15,540 +15,608 @@ import 'package:url_launcher/url_launcher.dart';
 import '../controllers/main_controller.dart';
 import '../controllers/shopping_cart_controller.dart';
 import '../database/main_db.dart';
+import '../helper/base_app_bar.dart';
 import '../helper/global_var.dart';
 import 'myorder_page.dart';
 
 class MainPage extends StatelessWidget {
-  MainPage({Key? key}) : super(key: key);
+  const MainPage({Key? key}) : super(key: key);
 
-  final MainController controller = Get.put(MainController(), permanent: false);
   final String tag = 'MainPage ';
 
-  final int activePage = 1;
+  Future<bool> _onWillPop() async {
+    return (await showDialog(
+          context: Get.context!,
+          builder: (context) => new AlertDialog(
+            title: Text('Are you sure?'.tr),
+            content: new Text('Do you want to exit an App'.tr),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: new Text('No'.tr),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: new Text('Yes'.tr),
+              ),
+            ],
+          ),
+        )) ??
+        false;
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        backgroundColor: GlobalVar.to.primaryBg,
-        appBar: AppBar(
-          centerTitle: true,
-          backgroundColor: GlobalVar.to.primary,
-          automaticallyImplyLeading: false,
-          title: Text(
-            'main_page_title'.tr,
-            style: TextStyle(color: Colors.white),
-          ),
-          actions: [
-            Obx(() => controller.emailstatusx.value
-                ? Container()
-                : TextButton(
-                    child: Text(
-                      'login'.tr,
-                      style: TextStyle(fontSize: 12, color: Colors.white),
-                    ),
-                    style:
-                        TextButton.styleFrom(fixedSize: Size.fromHeight(150)),
-                    onPressed: () {
-                      controller.emailstatusx.value
-                          ? Get.to(MyaccountPage())
-                          : Get.defaultDialog(
-                              titlePadding: const EdgeInsets.all(15),
-                              contentPadding: const EdgeInsets.all(15),
-                              title: 'You are not logged in yet'.tr,
-                              content: Text('Login now?'.tr),
-                              //  backgroundColor: Colors.teal,
-
-                              radius: 30,
-                              actions: <Widget>[
-                                TextButton(
-                                  child: Text(
-                                    'Cancel'.tr,
-                                    style: TextStyle(
-                                        color: GlobalVar.to.primaryText),
-                                  ),
-                                  onPressed: () {
-                                    Get.back();
-                                  },
-                                ),
-                                TextButton(
-                                  child: Text(
-                                    'Yes'.tr,
-                                    style: TextStyle(
-                                        color: GlobalVar.to.primaryText),
-                                  ),
-                                  onPressed: () {
-                                    Get.back();
-                                    // klik login cek uid punya email ngak
-                                    controller.checkAuth2();
-                                  },
-                                ),
-                              ],
-                            );
-                    },
-                  )),
-          ],
-        ),
-        body: Container(
-          alignment: Alignment.center,
-          padding: const EdgeInsets.all(0),
-          margin: const EdgeInsets.symmetric(horizontal: 5),
-          child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                Container(
-                    margin: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                    child: Row(
-                      children: [
-                        Expanded(
+    MainDb.getMerchantData();
+    print('$tag merchantidx ${GlobalVar.to.merchantidx.value}');
+    print('$tag merchantnamex ${GlobalVar.to.merchantnamex.value}');
+    print('$tag merchantaddressx ${GlobalVar.to.merchantaddressx.value}');
+    print('$tag merchantimageurlx ${GlobalVar.to.merchantimageurlx.value}');
+    return WillPopScope(
+        onWillPop: _onWillPop,
+        child: GetBuilder<MainController>(
+            builder: (controller) => Scaffold(
+                backgroundColor: GlobalVar.to.primaryBg,
+                appBar: BaseAppBar(
+                  title: Text(
+                    'main_page_title'.tr,
+                  ),
+                  appBar: AppBar(),
+                  widgets: <Widget>[],
+                ),
+                body: Container(
+                  alignment: Alignment.topCenter,
+                  padding: const EdgeInsets.all(10),
+                  margin: const EdgeInsets.symmetric(horizontal: 5),
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        /*  Expanded(
+                              child: FutureBuilder<String>(
+                                future: MainDb.getUserMerchant(), // async work
+                                builder: (BuildContext context,
+                                    AsyncSnapshot<String> snapshot) {
+                                  switch (snapshot.connectionState) {
+                                    case ConnectionState.waiting:
+                                      return const Text('Loading....');
+                                    default:
+                                      if (snapshot.hasError) {
+                                        return Text('Error: ${snapshot.error}');
+                                      } else {
+                                        if (snapshot.data == null) {
+                                          return const Text(
+                                            '0',
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold),
+                                            textAlign: TextAlign.left,
+                                          );
+                                        } else {
+                                          return Text(
+                                            '${snapshot.data}',
+                                            style: const TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold),
+                                            textAlign: TextAlign.left,
+                                          );
+                                        }
+                                      }
+                                  }
+                                },
+                              ),
+                            ),
+                          */
+                        SizedBox(
+                          height: 95,
                           child: Card(
+                            color: GlobalVar.to.primaryCard,
+                            elevation: 5,
+                            clipBehavior: Clip.antiAlias,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10.0),
                             ),
-                            color: Colors.white,
-                            elevation: 5,
-                            child: SizedBox(
-                              height: 70,
+                            child: Container(
+                              padding: EdgeInsets.fromLTRB(15, 15, 15, 0),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  const SizedBox(
-                                    width: 5,
-                                  ),
-                                  Obx(() => controller.restoidx.value.isNotEmpty
-                                      ? Expanded(
-                                          flex: 3,
-                                          child: FutureBuilder<Widget>(
-                                            future:
-                                                MainDb.checkUid(), // async work
-                                            builder: (BuildContext context,
-                                                AsyncSnapshot<Widget>
-                                                    snapshot) {
-                                              switch (
-                                                  snapshot.connectionState) {
-                                                case ConnectionState.waiting:
-                                                  return Text('Loading....'.tr);
-                                                default:
-                                                  if (snapshot.hasError) {
-                                                    return Text(
-                                                        'Error: ${snapshot.error}');
-                                                  } else {
-                                                    if (snapshot.data == null) {
-                                                      return const Expanded(
-                                                          child: Text(
-                                                        '0',
-                                                        style: TextStyle(
-                                                            color: Colors.black,
-                                                            fontSize: 18,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold),
-                                                        textAlign:
-                                                            TextAlign.left,
-                                                      ));
-                                                    } else {
-                                                      return snapshot.data!;
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Obx(
+                                      () => GlobalVar.to.merchantimageurlx.value
+                                              .isNotEmpty
+                                          ? Expanded(
+                                              flex: 1,
+                                              child: ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          8.0),
+                                                  child: Image.network(
+                                                      GlobalVar
+                                                          .to
+                                                          .merchantimageurlx
+                                                          .value,
+                                                      width: 55.0,
+                                                      fit: BoxFit.fitWidth,
+                                                      loadingBuilder:
+                                                          (BuildContext context,
+                                                              Widget child,
+                                                              ImageChunkEvent? loadingProgress) {
+                                                    if (loadingProgress ==
+                                                        null) {
+                                                      return child;
                                                     }
-                                                  }
-                                              }
-                                            },
-                                          ),
-                                        )
-                                      : Container()),
-                                  Expanded(
-                                      child: Container(
-                                    alignment: Alignment.centerRight,
-                                    child: TextButton(
-                                      child: Text(
-                                        'Change'.tr,
-                                        style: TextStyle(
-                                            fontSize: 12, color: Colors.red),
-                                      ),
-                                      style: TextButton.styleFrom(
-                                          fixedSize: Size.fromHeight(150)),
-                                      onPressed: () {
-                                        Get.to(() => RestoPage());
-                                      },
+                                                    return Center(
+                                                      child:
+                                                          CircularProgressIndicator(),
+                                                    );
+                                                  })))
+                                          : Expanded(
+                                              flex: 4,
+                                              child: Container(
+                                                padding:
+                                                    const EdgeInsets.all(10),
+                                                child: Text(
+                                                  'no resto'.tr,
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              )),
                                     ),
-                                  )),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                ],
-                              ),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Obx(() => GlobalVar.to.merchantimageurlx
+                                            .value.isNotEmpty
+                                        ? Expanded(
+                                            flex: 3,
+                                            child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: <Widget>[
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.end,
+                                                    children: [
+                                                      Expanded(
+                                                        flex: 2,
+                                                        child: Align(
+                                                          alignment: Alignment
+                                                              .centerLeft,
+                                                          child: Text(
+                                                            GlobalVar
+                                                                .to
+                                                                .merchantnamex
+                                                                .value,
+                                                            maxLines: 1,
+                                                            style: const TextStyle(
+                                                                color: Colors
+                                                                    .black,
+                                                                fontSize: 17,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
+                                                          ),
+                                                        ),
+                                                      )
+                                                    ],
+                                                  ),
+                                                  Row(
+                                                    children: [
+                                                      Expanded(
+                                                        flex: 2,
+                                                        child: Align(
+                                                          alignment: Alignment
+                                                              .centerLeft,
+                                                          child: Text(
+                                                            GlobalVar
+                                                                .to
+                                                                .merchantaddressx
+                                                                .value,
+                                                            maxLines: 2,
+                                                            style: const TextStyle(
+                                                                color: Colors
+                                                                    .black,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
+                                                          ),
+                                                        ),
+                                                      )
+                                                    ],
+                                                  ),
+                                                ]))
+                                        : SizedBox(
+                                            width: 0,
+                                          )),
+                                    Expanded(
+                                      flex: 1,
+                                      child: Align(
+                                          alignment: Alignment.topRight,
+                                          child: TextButton(
+                                            child: Text(
+                                              'Change'.tr,
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.red),
+                                            ),
+                                            style: TextButton.styleFrom(
+                                                fixedSize:
+                                                    Size.fromHeight(150)),
+                                            onPressed: () {
+                                              Get.toNamed('/resto');
+                                            },
+                                          )),
+                                    ),
+                                  ]),
                             ),
                           ),
                         ),
-                      ],
-                    )),
-                const SizedBox(
-                  height: 10,
-                ),
-                Container(
-                    alignment: Alignment.topCenter,
-                    padding: const EdgeInsets.fromLTRB(20, 5, 20, 0),
-                    margin: const EdgeInsets.symmetric(horizontal: 0),
-                    child: Row(children: [
-                      Obx(() => '${controller.categorynamex.value}' != ''
-                          ? Text(
-                              '${controller.categorynamex.value}',
-                              style: const TextStyle(
-                                  fontSize: 18,
-                                  color: Colors.red,
-                                  fontWeight: FontWeight.bold),
-                            )
-                          : Text(
-                              'View All Menu'.tr,
-                              style: const TextStyle(
-                                  fontSize: 18,
-                                  color: Colors.red,
-                                  fontWeight: FontWeight.bold),
-                            ))
-                    ])),
-                Obx(() => controller.restoidx.value.isNotEmpty
-                    ? Expanded(
-                        child: StreamBuilder<QuerySnapshot>(
-                        stream: MainDb.getMenu(controller.categoryidx.value),
-                        builder: (BuildContext context,
-                            AsyncSnapshot<QuerySnapshot?> snapshot) {
-                          if (snapshot.hasError) {
-                            return Text('Error: ${snapshot.error}');
-                          }
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Container(
+                            alignment: Alignment.topCenter,
+                            padding: const EdgeInsets.fromLTRB(20, 5, 20, 0),
+                            margin: const EdgeInsets.symmetric(horizontal: 0),
+                            child: Row(children: [
+                              Obx(() =>
+                                  '${controller.categorynamex.value}' != ''
+                                      ? Text(
+                                          '${controller.categorynamex.value}',
+                                          style: const TextStyle(
+                                              fontSize: 18,
+                                              color: Colors.red,
+                                              fontWeight: FontWeight.bold),
+                                        )
+                                      : Text(
+                                          'View All Menu'.tr,
+                                          style: const TextStyle(
+                                              fontSize: 18,
+                                              color: Colors.red,
+                                              fontWeight: FontWeight.bold),
+                                        ))
+                            ])),
+                        Obx(() => controller.merchantidx.value.isNotEmpty
+                            ? Expanded(
+                                child: StreamBuilder<QuerySnapshot>(
+                                stream: MainDb.getMenu(
+                                    controller.categoryidx.value),
+                                builder: (BuildContext context,
+                                    AsyncSnapshot<QuerySnapshot?> snapshot) {
+                                  if (snapshot.hasError) {
+                                    return Text('Error: ${snapshot.error}');
+                                  }
 
-                          if (snapshot.data == null) {
-                            return const Center(
-                                child: SizedBox(
-                                    width: 30,
-                                    height: 30,
-                                    child: Center(
-                                        child: CircularProgressIndicator())));
-                          }
-
-                          if (snapshot.data!.size == 0) {
-                            return Container(
-                              padding: const EdgeInsets.all(30),
-                              child: Text('no menu'.tr),
-                            );
-                          }
-                          return controller.getMenuList(snapshot);
-                          //   return Container();
-                          //   return Friend(snapshot);
-                        },
-                      ))
-                    : Container()),
-                Align(
-                  alignment: FractionalOffset.bottomCenter,
-                  child: Container(
-                      color: Colors.grey[100],
-                      margin: const EdgeInsets.all(0),
-                      child: Row(
-                        children: [
-                          Obx(() => Expanded(
-                                child: SizedBox(
-                                    height: 60,
-                                    child: InkWell(
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: <Widget>[
-                                          controller.numshopcart.value != 0
-                                              ? Badge(
-                                                  badgeContent: Text(
-                                                    '${controller.numshopcart.value}',
-                                                    style: TextStyle(
-                                                        fontSize: 14,
-                                                        color: Colors.white),
-                                                  ),
-                                                  child: Icon(
-                                                    Icons.dining,
-                                                    size: 25,
-                                                    color: Colors.black,
-                                                  ),
-                                                )
-                                              : Icon(
-                                                  Icons.dining,
-                                                  size: 25,
-                                                  color: Colors.black,
-                                                ),
-                                          Text(
-                                            'Tray'.tr,
-                                            style: TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 12),
-                                            textAlign: TextAlign.left,
-                                          ),
-                                        ],
+                                  if (snapshot.data == null) {
+                                    return Container(
+                                      padding: const EdgeInsets.all(30),
+                                      child: Text(
+                                        'no menu'.tr,
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold),
                                       ),
-                                      onTap: () {
-                                        print("Tapped on container");
-                                        print(
-                                            "${controller.numshopcart.value}");
-                                        controller.restoidx.value == 'null'
-                                            ? Get.snackbar(
-                                                "Your tray is empty".tr,
-                                                "You haven't chosen a restaurant yet"
-                                                    .tr,
-                                                icon: Icon(Icons.warning,
-                                                    size: 35,
-                                                    color: Colors.white),
-                                                snackPosition:
-                                                    SnackPosition.BOTTOM,
-                                                backgroundColor: Colors.red,
-                                                colorText: Colors.white)
-                                            : controller.numshopcart.value != 0
-                                                ? Get.to(
-                                                    () => ShoppingCartPage())
-                                                : Get.snackbar(
-                                                    "Your tray is empty".tr,
-                                                    "Let's choose the menu".tr,
+                                    );
+
+                                    /*      return const Center(
+                                        child: SizedBox(
+                                            width: 30,
+                                            height: 30,
+                                            child: Center(
+                                                child:
+                                                    CircularProgressIndicator())));
+                                */
+                                  }
+
+                                  if (snapshot.data!.size == 0) {
+                                    return Container(
+                                      padding: const EdgeInsets.all(30),
+                                      child: Text(
+                                        'no menu'.tr,
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    );
+                                  }
+                                  return controller.getMenuList(snapshot);
+                                  //   return Container();
+                                  //   return Friend(snapshot);
+                                },
+                              ))
+                            : Container()),
+                        Align(
+                          alignment: FractionalOffset.bottomCenter,
+                          child: Container(
+                              color: Colors.grey[100],
+                              margin: const EdgeInsets.all(0),
+                              child: Row(
+                                children: [
+                                  Obx(() => Expanded(
+                                        child: SizedBox(
+                                            height: 60,
+                                            child: InkWell(
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: <Widget>[
+                                                  controller.numshopcart
+                                                              .value !=
+                                                          0
+                                                      ? Badge(
+                                                          badgeContent: Text(
+                                                            '${controller.numshopcart.value}',
+                                                            style: TextStyle(
+                                                                fontSize: 14,
+                                                                color: Colors
+                                                                    .white),
+                                                          ),
+                                                          child: Icon(
+                                                            Icons.dining,
+                                                            size: 25,
+                                                            color: Colors.black,
+                                                          ),
+                                                        )
+                                                      : Icon(
+                                                          Icons.dining,
+                                                          size: 25,
+                                                          color: Colors.black,
+                                                        ),
+                                                  Text(
+                                                    'Tray'.tr,
+                                                    style: TextStyle(
+                                                        color: Colors.black,
+                                                        fontSize: 12),
+                                                    textAlign: TextAlign.left,
+                                                  ),
+                                                ],
+                                              ),
+                                              onTap: () {
+                                                print("Tapped on container");
+                                                print(
+                                                    "${controller.numshopcart.value}");
+                                                controller.merchantidx.value ==
+                                                        ''
+                                                    ? Get.snackbar(
+                                                        "Your tray is empty".tr,
+                                                        "You haven't chosen a restaurant yet"
+                                                            .tr,
+                                                        icon: Icon(Icons.warning,
+                                                            size: 35,
+                                                            color:
+                                                                Colors.white),
+                                                        snackPosition: SnackPosition
+                                                            .BOTTOM,
+                                                        backgroundColor:
+                                                            Colors.red,
+                                                        colorText: Colors.white)
+                                                    : controller.numshopcart.value !=
+                                                            0
+                                                        ? Get.toNamed(
+                                                            '/shoppingcart')
+                                                        : Get.snackbar(
+                                                            "Your tray is empty".tr, "Let's choose the menu".tr,
+                                                            icon: Icon(
+                                                                Icons.warning,
+                                                                size: 35,
+                                                                color: Colors.white),
+                                                            snackPosition: SnackPosition.BOTTOM,
+                                                            backgroundColor: Colors.red,
+                                                            colorText: Colors.white);
+                                              },
+                                            )),
+                                      )),
+                                  Expanded(
+                                    child: SizedBox(
+                                        height: 60,
+                                        child: InkWell(
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: <Widget>[
+                                              Icon(
+                                                Icons.category,
+                                                size: 25,
+                                                color: Colors.black,
+                                              ),
+                                              Text(
+                                                'Category'.tr,
+                                                style: TextStyle(
+                                                    color: Colors.black,
+                                                    fontSize: 12),
+                                                textAlign: TextAlign.left,
+                                              ),
+                                            ],
+                                          ),
+                                          onTap: () {
+                                            print("Tapped on container");
+                                            GlobalVar.to.merchantidx.value == ''
+                                                ? Get.snackbar(
+                                                    "No categories yet".tr,
+                                                    "You haven't chosen a restaurant yet"
+                                                        .tr,
                                                     icon: Icon(Icons.warning,
                                                         size: 35,
                                                         color: Colors.white),
                                                     snackPosition:
                                                         SnackPosition.BOTTOM,
                                                     backgroundColor: Colors.red,
-                                                    colorText: Colors.white);
-                                      },
-                                    )),
-                              )),
-                          Expanded(
-                            child: SizedBox(
-                                height: 60,
-                                child: InkWell(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: <Widget>[
-                                      Icon(
-                                        Icons.category,
-                                        size: 25,
-                                        color: Colors.black,
-                                      ),
-                                      Text(
-                                        'Category'.tr,
-                                        style: TextStyle(
-                                            color: Colors.black, fontSize: 12),
-                                        textAlign: TextAlign.left,
-                                      ),
-                                    ],
-                                  ),
-                                  onTap: () {
-                                    print("Tapped on container");
-
-                                    controller.restoidx.value == 'null'
-                                        ? Get.snackbar(
-                                            "No categories yet".tr,
-                                            "You haven't chosen a restaurant yet"
-                                                .tr,
-                                            icon: Icon(Icons.warning,
-                                                size: 35, color: Colors.white),
-                                            snackPosition: SnackPosition.BOTTOM,
-                                            backgroundColor: Colors.red,
-                                            colorText: Colors.white)
-                                        : Get.bottomSheet(
-                                            Column(
-                                              children: [
-                                                const SizedBox(
-                                                  height: 20,
-                                                  width: 20,
-                                                ),
-                                                Row(
-                                                  children: [
-                                                    const SizedBox(
-                                                      width: 30,
-                                                    ),
-                                                    Expanded(
-                                                        flex: 2,
-                                                        child: Text(
-                                                          'Category'.tr,
-                                                          style: TextStyle(
-                                                              fontSize: 18,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold),
-                                                        )),
-                                                    const SizedBox(
-                                                      width: 50,
-                                                    ),
-                                                    Expanded(
-                                                        flex: 1,
-                                                        child: OutlinedButton(
-                                                          onPressed: () {
-                                                            Get.back();
-                                                          },
-                                                          child:
-                                                              Text('Close'.tr),
-                                                        )),
-                                                  ],
-                                                ),
-                                                Divider(
-                                                  thickness: 1,
-                                                ),
-                                                Expanded(
-                                                    child: ListView.builder(
-                                                  itemCount:
-                                                      controller.list.length,
-                                                  itemBuilder:
-                                                      (BuildContext context,
-                                                          int index) {
-                                                    return Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
+                                                    colorText: Colors.white)
+                                                : Get.bottomSheet(
+                                                    Column(
                                                       children: [
-                                                        UnconstrainedBox(
-                                                          child: Container(
-                                                            padding: EdgeInsets
-                                                                .fromLTRB(30,
-                                                                    10, 30, 10),
-                                                            child: InkWell(
-                                                              onTap: () {
-                                                                controller.setCat(
-                                                                    '${controller.list[index]['categoryName']}',
-                                                                    '${controller.list[index]['categoryID']}');
-                                                                print(
-                                                                    'You Tapped on ${controller.list[index]['categoryName']}');
-                                                                Get.back();
-                                                              },
-                                                              child: Text(
-                                                                  controller.list[
-                                                                          index]
-                                                                      [
-                                                                      'categoryName'],
+                                                        const SizedBox(
+                                                          height: 20,
+                                                          width: 20,
+                                                        ),
+                                                        Row(
+                                                          children: [
+                                                            const SizedBox(
+                                                              width: 30,
+                                                            ),
+                                                            Expanded(
+                                                                flex: 2,
+                                                                child: Text(
+                                                                  'Category'.tr,
                                                                   style: TextStyle(
                                                                       fontSize:
                                                                           18,
                                                                       fontWeight:
                                                                           FontWeight
-                                                                              .bold)),
+                                                                              .bold),
+                                                                )),
+                                                            const SizedBox(
+                                                              width: 50,
                                                             ),
-                                                          ),
+                                                            Expanded(
+                                                                flex: 1,
+                                                                child:
+                                                                    OutlinedButton(
+                                                                  onPressed:
+                                                                      () {
+                                                                    Get.back();
+                                                                  },
+                                                                  child: Text(
+                                                                      'Close'
+                                                                          .tr),
+                                                                )),
+                                                          ],
                                                         ),
                                                         Divider(
                                                           thickness: 1,
                                                         ),
+                                                        Obx(() => Expanded(
+                                                                child: ListView
+                                                                    .builder(
+                                                              itemCount: GlobalVar
+                                                                  .to
+                                                                  .categorylistx
+                                                                  .length,
+                                                              itemBuilder:
+                                                                  (BuildContext
+                                                                          context,
+                                                                      int index) {
+                                                                return Column(
+                                                                  crossAxisAlignment:
+                                                                      CrossAxisAlignment
+                                                                          .start,
+                                                                  children: [
+                                                                    UnconstrainedBox(
+                                                                      child:
+                                                                          Container(
+                                                                        padding: EdgeInsets.fromLTRB(
+                                                                            30,
+                                                                            10,
+                                                                            30,
+                                                                            10),
+                                                                        child:
+                                                                            InkWell(
+                                                                          onTap:
+                                                                              () {
+                                                                            controller.setCat('${GlobalVar.to.categorylistx[index]['categoryName']}',
+                                                                                '${GlobalVar.to.categorylistx[index]['categoryID']}');
+                                                                            print('You Tapped on ${GlobalVar.to.categorylistx[index]['categoryName']}');
+                                                                            Get.back();
+                                                                          },
+                                                                          child: Text(
+                                                                              GlobalVar.to.categorylistx[index]['categoryName'],
+                                                                              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                    Divider(
+                                                                      thickness:
+                                                                          1,
+                                                                    ),
+                                                                  ],
+                                                                );
+                                                              },
+                                                            ))),
                                                       ],
-                                                    );
-                                                  },
-                                                )),
-                                              ],
-                                            ),
-                                            backgroundColor: Colors.white,
-                                            elevation: 0,
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                            ),
-                                          );
-                                    ;
-                                  },
-                                )),
-                          ),
-                          Expanded(
-                            child: SizedBox(
-                                height: 60,
-                                child: InkWell(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: <Widget>[
-                                      Icon(
-                                        Icons.food_bank,
-                                        size: 25,
-                                        color: Colors.black,
-                                      ),
-                                      Text(
-                                        'My Order'.tr,
-                                        style: TextStyle(
-                                            color: Colors.black, fontSize: 12),
-                                        textAlign: TextAlign.left,
-                                      ),
-                                    ],
+                                                    ),
+                                                    backgroundColor:
+                                                        Colors.white,
+                                                    elevation: 0,
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10),
+                                                    ),
+                                                  );
+                                            ;
+                                          },
+                                        )),
                                   ),
-                                  onTap: () {
-                                    print("Tapped on container 2");
-                                    Get.to(() => MyorderPage());
-                                  },
-                                )),
-                          ),
-                          Expanded(
-                            child: SizedBox(
-                                height: 60,
-                                child: InkWell(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: <Widget>[
-                                      Icon(
-                                        Icons.account_circle,
-                                        size: 25,
-                                        color: Colors.black,
-                                      ),
-                                      Text(
-                                        'My Account'.tr,
-                                        style: TextStyle(
-                                            color: Colors.black, fontSize: 12),
-                                        textAlign: TextAlign.left,
-                                      ),
-                                    ],
-                                  ),
-                                  onTap: () {
-                                    print(
-                                        "Tapped on restoid ${userBox.read('restoid')}");
-                                    print(
-                                        "Tapped on container3 ${controller.emailstatusx.value}");
-                                    controller.emailstatusx.value
-                                        ? Get.to(() => MyaccountPage())
-                                        : Get.defaultDialog(
-                                            titlePadding:
-                                                const EdgeInsets.all(15),
-                                            contentPadding:
-                                                const EdgeInsets.all(15),
-                                            title:
-                                                'You are not logged in yet'.tr,
-                                            content: Text('Login now?'.tr),
-                                            //  backgroundColor: Colors.teal,
-
-                                            radius: 30,
-                                            actions: <Widget>[
-                                              TextButton(
-                                                child: Text(
-                                                  'Cancel'.tr,
-                                                  style: TextStyle(
-                                                      color: GlobalVar
-                                                          .to.primaryText),
-                                                ),
-                                                onPressed: () {
-                                                  Get.back();
-                                                },
+                                  Expanded(
+                                    child: SizedBox(
+                                        height: 60,
+                                        child: InkWell(
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: <Widget>[
+                                              Icon(
+                                                Icons.food_bank,
+                                                size: 25,
+                                                color: Colors.black,
                                               ),
-                                              TextButton(
-                                                child: Text(
-                                                  'Yes'.tr,
-                                                  style: TextStyle(
-                                                      color: GlobalVar
-                                                          .to.primaryText),
-                                                ),
-                                                onPressed: () {
-                                                  Get.back();
-                                                  // klik login cek uid punya email ngak
-                                                  controller.checkAuth2();
-                                                },
+                                              Text(
+                                                'My Order'.tr,
+                                                style: TextStyle(
+                                                    color: Colors.black,
+                                                    fontSize: 12),
+                                                textAlign: TextAlign.left,
                                               ),
                                             ],
-                                          );
-                                  },
-                                )),
-                          ),
-                        ],
-                      )),
-                ),
-              ]),
-        ));
+                                          ),
+                                          onTap: () {
+                                            print("Tapped on container 2");
+                                            Get.to(() => MyorderPage());
+                                          },
+                                        )),
+                                  ),
+                                  Expanded(
+                                    child: SizedBox(
+                                        height: 60,
+                                        child: InkWell(
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: <Widget>[
+                                              Icon(
+                                                Icons.account_circle,
+                                                size: 25,
+                                                color: Colors.black,
+                                              ),
+                                              Expanded(
+                                                  child: Text(
+                                                'My Account'.tr,
+                                                style: TextStyle(
+                                                    color: Colors.black,
+                                                    fontSize: 12),
+                                                textAlign: TextAlign.left,
+                                              )),
+                                            ],
+                                          ),
+                                          onTap: () {
+                                            Get.toNamed('/myaccount');
+                                          },
+                                        )),
+                                  ),
+                                ],
+                              )),
+                        ),
+                      ]),
+                ))));
   }
 }

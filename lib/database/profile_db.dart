@@ -8,7 +8,9 @@ import '../views/myaccount_page.dart';
 
 class ProfileDb {
   static updateProfile(String value) async {
-    if (value == '')
+    print('ProfileDb updateProfile');
+    if (value == '') {
+      print('ProfileDb updateProfile if');
       await firebaseFirestore
           .collection("users")
           .doc(firebaseAuth.currentUser!.uid)
@@ -20,11 +22,9 @@ class ProfileDb {
         'updatedAt': DateTime.now(),
         'iupdatedAt': DateTime.now().millisecondsSinceEpoch ~/ 1000,
         //   'icreatedAt': DateTime.now().millisecondsSinceEpoch ~/ 1000,
-      }).whenComplete(() {
-        MyaccountController.to.getUserData();
-        Get.to(() => MyaccountPage());
       });
-    else
+    } else {
+      print('ProfileDb updateProfile else');
       await firebaseFirestore
           .collection("users")
           .doc(firebaseAuth.currentUser!.uid)
@@ -33,11 +33,7 @@ class ProfileDb {
         'userPhone': userBox.read('userphone'),
         'userAddress': userBox.read('useraddress'),
         'userImageurl': value,
-      }).whenComplete(() {
-        ProfileController.to.imageFile = null;
-        print('addNewTopup whenComplete userid ${userBox.read('userid')}');
-        MyaccountController.to.getUserData();
-        Get.to(() => MyaccountPage());
       });
+    }
   }
 }

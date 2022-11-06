@@ -36,6 +36,10 @@ class Languages extends Translations {
           'Add': 'Add',
           'Out of stock': 'Out of stock',
           'Restaurant not selected': 'Restaurant not selected',
+          'Login with Google': 'Login with Google',
+          'Are you sure?': 'Are you sure?',
+          'Do you want to exit an App': 'Do you want to exit an App',
+          'No': 'No',
 
           //////// shoppingcart,checkout,myorder
           ///
@@ -103,6 +107,10 @@ class Languages extends Translations {
           'Add': 'Tambahkan',
           'Out of stock': 'Habis',
           'Restaurant not selected': 'Resto belum dipilih',
+          'Login with Google': 'Login dengan Google',
+          'Are you sure?': 'Anda yakin?',
+          'Do you want to exit an App': 'Anda ingin keluar aplikasi',
+          'No': 'Tidak',
 
           //////
           ///
@@ -135,8 +143,7 @@ class Languages extends Translations {
           'Select an image from Gallery / camera':
               'Pilih gambar dari Galeri / kamera',
 
-          'no resto':
-              'Belum ada resto dipilih. Klik tombol Ubah, untuk memilih resto.',
+          'no resto': 'Klik tombol Ubah, untuk memilih resto.',
           'My Profile': 'Profil',
           'Share App': 'Bagikan App',
           'Terms and conditions': 'Syarat & Ketentuan',

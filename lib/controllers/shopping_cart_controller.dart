@@ -18,8 +18,6 @@ import 'package:camera/camera.dart';
 import '../utils/dynamic_link_service.dart';
 
 class ShoppingCartController extends GetxController {
-  static ShoppingCartController get to => Get.find<ShoppingCartController>();
-
   RxString usernamex = ''.obs;
   RxInt sumtotalx = 0.obs;
   final saldo = NumberFormat.currency(
@@ -37,7 +35,7 @@ class ShoppingCartController extends GetxController {
       sumtot = sumtot! + int.parse(element['sumtot']);
       userBox.write('sumtotstr', sumtot.toString());
     });
-    return 'Rp. ${saldo.format(sumtot)}';
+    return '$sumtot';
   }
 
   void getUserData() {
@@ -113,8 +111,8 @@ class ShoppingCartController extends GetxController {
                                     TextStyle(color: GlobalVar.to.primaryText),
                               ),
                               onPressed: () {
-                                RestoDb.deleteResto(
-                                    MainController.to.restoidx.value);
+                                RestoDb.deleteMymerchant(
+                                    GlobalVar.to.merchantidx.value);
                               },
                             ),
                           ],
@@ -181,7 +179,7 @@ class ShoppingCartController extends GetxController {
                                                             color: Colors.black,
                                                             fontWeight:
                                                                 FontWeight
-                                                                    .normal),
+                                                                    .bold),
                                                       ),
                                                     ),
                                                   )
@@ -252,7 +250,6 @@ class ShoppingCartController extends GetxController {
   }
 
   void updateQty(int index) {
-    print('updateQty qty ${MainController.to.qty.value}');
     print('updateQty index ${index}');
     print('updateQty qty ${shopcartList[index]['qty']}');
     shopcartList[index]['qty'] = '${MainController.to.qty.value}';
@@ -263,7 +260,8 @@ class ShoppingCartController extends GetxController {
     print('updateQty qty ${shopcartList[index]['qty']}');
     update();
     Get.back();
-    Get.to(() => MainPage());
+    update();
+    // Get.to(() => MainPage());
   }
 
   void deleteItem(int index) {
@@ -272,6 +270,10 @@ class ShoppingCartController extends GetxController {
     shopcartList.removeAt(index);
     print('deleteItem length ${shopcartList.length}');
     MainController.to.getNumShopcart();
-    Get.to(() => MainPage());
+    //  Get.to(() => MainPage());
+    update();
+    if (shopcartList.length == 0) {
+      Get.toNamed('/main');
+    }
   }
 }

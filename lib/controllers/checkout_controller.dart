@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:intl/intl.dart';
 import 'package:path/path.dart';
 
 import 'package:firebase_storage/firebase_storage.dart';
@@ -9,6 +10,7 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart' as http;
+import 'package:restoresto_repo/controllers/main_controller.dart';
 import 'package:restoresto_repo/controllers/myaccount_controller.dart';
 import 'package:restoresto_repo/views/main_page.dart';
 import 'package:restoresto_repo/views/shopping_cart_page.dart';
@@ -19,8 +21,6 @@ import '../helper/global_var.dart';
 import '../views/myaccount_page.dart';
 
 class CheckoutController extends GetxController {
-  static CheckoutController get to => Get.find<CheckoutController>();
-
   RxString pageTitle = 'Checkout'.tr.obs;
 
   RxString userid = ''.obs;
@@ -38,6 +38,8 @@ class CheckoutController extends GetxController {
   RxnString errorTexttablenumber = RxnString(null);
 
   Rxn<Function()> submitFunc = Rxn<Function()>(null);
+  final saldo = NumberFormat.currency(
+      locale: 'id_ID', customPattern: '#,###', symbol: 'Rp.', decimalDigits: 0);
 
   @override
   void onInit() {
@@ -50,7 +52,9 @@ class CheckoutController extends GetxController {
     print('onInit email ${userBox.read('useremail')}');
     print('onInit username ${userBox.read('username')}');
 
-    ordertotalController.text = '${userBox.read('ordertotal')}';
+    //  ordertotalController.text = '${userBox.read('ordertotal')}';
+    ordertotalController.text =
+        'Rp. ${saldo.format(int.parse(userBox.read('ordertotal').toString()))}';
     ordernameController.text = '${userBox.read('username')}';
     tablenumberController.text = '';
   }
@@ -127,6 +131,7 @@ class CheckoutController extends GetxController {
       await Future.delayed(const Duration(seconds: 1), () => showIndi());
 
       if (shopcartList.isNotEmpty) {
+        CheckoutDb.updateOrder();
         Get.defaultDialog(
           titlePadding: const EdgeInsets.all(15),
           contentPadding: const EdgeInsets.all(15),
@@ -144,10 +149,9 @@ class CheckoutController extends GetxController {
                 style: TextStyle(color: Colors.red),
               ),
               onPressed: () {
-                CheckoutDb.updateOrder();
                 Get.back();
-
-                Get.off(() => MainPage());
+                MainController.to.numshopcart.value = 0;
+                Get.toNamed('/main');
               },
             ),
           ],

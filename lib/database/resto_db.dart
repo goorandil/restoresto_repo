@@ -9,6 +9,8 @@ import '../helper/global_var.dart';
 import '../views/main_page.dart';
 import '../views/resto_page.dart';
 
+final String tag = 'RestoDb ';
+
 class RestoDb {
 /*  static Future<String> checkResto() async => firebaseFirestore
           .collection("merchants")
@@ -34,7 +36,7 @@ class RestoDb {
 
     if ('${userBox.read('editrestoid')}' != '${userBox.read('restoid')}') {
       shopcartList.clear();
-      MainController.to.numshopcart.value = 0;
+      //  MainController.to.numshopcart.value = 0;
     }
     userBox.write('restoid', '${userBox.read('editrestoid')}');
     userBox.write('merchantid', '${userBox.read('editmerchantid')}');
@@ -42,10 +44,34 @@ class RestoDb {
         .collection('users')
         .doc(firebaseAuth.currentUser!.uid)
         .update({
-      'restoID': userBox.read("editrestoid"),
       'merchantID': userBox.read("editmerchantid"),
     });
+    GlobalVar.to.merchantidx.value = userBox.read("editmerchantid");
     Get.to(() => MainPage());
+  }
+
+  static takeMymerchant() async {
+    print('$tag takeMymerchant ');
+
+    if ('${userBox.read('editmerchantid')}' !=
+        '${GlobalVar.to.merchantidx.value}') {
+      shopcartList.clear();
+      //  MainController.to.numshopcart.value = 0;
+    }
+    GlobalVar.to.merchantidx.value = '${userBox.read('editmerchantid')}';
+    userBox.write('merchantid', '${userBox.read('editmerchantid')}');
+    await firebaseFirestore
+        .collection('users')
+        .doc(firebaseAuth.currentUser!.uid)
+        .update({
+      'merchantID': GlobalVar.to.merchantidx.value,
+    });
+    print('$tag merchantidx ${GlobalVar.to.merchantidx.value}');
+    print('$tag merchantnamex ${GlobalVar.to.merchantnamex.value}');
+    print('$tag merchantaddressx ${GlobalVar.to.merchantaddressx.value}');
+    print('$tag merchantimageurlx ${GlobalVar.to.merchantimageurlx.value}');
+
+    Get.toNamed('/main');
   }
 
   static addNewResto(String value) async {
@@ -69,34 +95,34 @@ class RestoDb {
  */
   }
 
-  static getResto() {
-    print('getResto ${firebaseAuth.currentUser!.uid}');
-    print('getResto ${GlobalVar.to.restoidx.value}');
+  static getMymerchant() {
+    print('$tag getMymerchant');
     return firebaseFirestore
-        .collection("myrestos")
+        .collection("mymerchants")
         .doc(firebaseAuth.currentUser!.uid)
-        .collection('myresto')
+        .collection('mymerchant')
         .snapshots();
   }
 
-  static deleteResto(String restoid) async {
-    print('deleteResto ${firebaseAuth.currentUser!.uid}');
-    print('deleteResto ${GlobalVar.to.restoidx.value}');
-    await firebaseFirestore
-        .collection('users')
-        .doc(firebaseAuth.currentUser!.uid)
-        .update({
-      'restoID': FieldValue.delete(),
-      'merchantID': FieldValue.delete()
-    });
+  static deleteMymerchant(String merchantid) async {
+    print('deleteMymerchant ${merchantid}');
 
+    if (GlobalVar.to.merchantidx.value == merchantid) {
+      await firebaseFirestore
+          .collection('users')
+          .doc(firebaseAuth.currentUser!.uid)
+          .update({'merchantID': FieldValue.delete()});
+
+      GlobalVar.to.categorylistx.clear();
+    }
     firebaseFirestore
-        .collection('myrestos')
+        .collection('mymerchants')
         .doc(firebaseAuth.currentUser!.uid)
-        .collection('myresto')
-        .doc(restoid)
+        .collection('mymerchant')
+        .doc(merchantid)
         .delete();
     Get.back();
-    Get.to(() => RestoPage());
+    GlobalVar.to.merchantidx.value = '';
+    Get.toNamed('/resto');
   }
 }

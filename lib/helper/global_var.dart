@@ -11,11 +11,18 @@ List<dynamic> shopcartList = [].obs;
 
 class GlobalVar extends GetxController {
   static GlobalVar get to => Get.find<GlobalVar>();
+
   RxString useridx = "".obs;
   RxString usernamex = "".obs;
   RxString useremailx = "".obs;
   RxString userimageurlx = "".obs;
-  RxString restoidx = "".obs;
+
+  RxString merchantidx = "".obs;
+  RxString merchantnamex = "".obs;
+  RxString merchantimageurlx = "".obs;
+  RxString merchantaddressx = "".obs;
+
+  RxList categorylistx = [].obs;
 
   RxString eventidx = "".obs;
   RxString eventnamex = "".obs;

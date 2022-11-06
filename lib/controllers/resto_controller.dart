@@ -5,7 +5,7 @@ import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:restoresto_repo/controllers/main_controller.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../database/resto_db.dart';
 import '../helper/firebase_auth_constants.dart';
 import '../helper/global_var.dart';
@@ -14,8 +14,6 @@ import 'package:camera/camera.dart';
 import '../utils/dynamic_link_service.dart';
 
 class RestoController extends GetxController {
-  static RestoController get to => Get.find<RestoController>();
-
   RxString qr = ''.obs;
   RxBool camstate = false.obs;
   late String _scanBarcode = 'Unknown';
@@ -27,8 +25,8 @@ class RestoController extends GetxController {
     super.onInit();
     //   DynamicLinkService.createDynamicLink(
     //     'JV5IT3If9HBTfQ3mWepI', 'CoXBb4XppBqyVkXlMsO3');
-    DynamicLinkService.createDynamicLink(
-        '${userBox.read('restoid')}', '${userBox.read('merchantid')}');
+    //  DynamicLinkService.createDynamicLink(
+    //    '${userBox.read('restoid')}', '${userBox.read('merchantid')}');
   }
 
   bool hasCameraPermission = false;
@@ -116,12 +114,43 @@ class RestoController extends GetxController {
     try {
       scannedQrcode = await FlutterBarcodeScanner.scanBarcode(
           '#ff6666', 'Cancel'.tr, false, ScanMode.QR);
-      print('scannedQrcode $scannedQrcode');
+      print('scannedQrcode 1 $scannedQrcode');
       if (scannedQrcode != '-1') {
-        print('scannedQrcode $scannedQrcode');
+        print('scannedQrcode 2 $scannedQrcode');
+
+        Get.defaultDialog(
+          titlePadding: const EdgeInsets.all(15),
+          contentPadding: const EdgeInsets.all(15),
+          title: 'Bergabung dengan resto?'.tr,
+          content: Text('Select'.tr),
+          //  backgroundColor: Colors.teal,
+
+          radius: 30,
+          actions: <Widget>[
+            TextButton(
+              child: Text(
+                'Cancel'.tr,
+                style: TextStyle(color: GlobalVar.to.primaryText),
+              ),
+              onPressed: () {
+                Get.back();
+              },
+            ),
+            TextButton(
+              child: Text(
+                'Continue'.tr,
+                style: TextStyle(color: GlobalVar.to.primaryText),
+              ),
+              onPressed: () {
+                Get.back();
+                launchURLtoc('$scannedQrcode');
+              },
+            ),
+          ],
+        );
       }
     } on PlatformException {
-      print('scannedQrcode PlatformException');
+      print('scannedQrcode 3 PlatformException');
     }
 
     // If the widget was removed from the tree while the asynchronous platform
@@ -132,6 +161,32 @@ class RestoController extends GetxController {
     //  setState(() {
 
     //});
+  }
+
+  Future<void> _launchInBrowser(Uri url) async {
+    if (!await launchUrl(
+      url,
+      mode: LaunchMode.externalApplication,
+    )) {
+      throw 'Could not launch $url';
+    }
+  }
+
+  launchURLtoc(String urlstr) async {
+    String merchanturl = urlstr;
+    var arr = merchanturl.split('/');
+    print('launchURLtoc $merchanturl');
+    print('launchURLtoc $arr');
+    print('launchURLtoc ${arr[2]}');
+    print('launchURLtoc ${arr[3]}');
+    Uri url =
+        Uri(scheme: 'https', host: 'restoresto.page.link', path: '${arr[3]}');
+    _launchInBrowser(url);
+    if (await canLaunchUrl(url)) {
+      await canLaunchUrl(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.
@@ -195,23 +250,22 @@ class RestoController extends GetxController {
     super.onClose();
   }
 
-  Widget getRestoList(AsyncSnapshot<QuerySnapshot<Object?>?> snapshot2) {
+  Widget getMymerchantList(AsyncSnapshot<QuerySnapshot<Object?>?> snapshot2) {
+    print('$tag getMymerchantList ');
     if (snapshot2.hasData) {
       return ListView.builder(
           padding: const EdgeInsets.fromLTRB(0, 5, 0, 10),
           itemCount: snapshot2.data!.docs.length,
           itemBuilder: (context, i) {
             return StreamBuilder<DocumentSnapshot>(
-                stream: _applicationStream(snapshot2.data!.docs[i].id),
+                stream: _mymerchantStream(snapshot2.data!.docs[i].id),
                 builder: (context, snapshot) {
                   print(' snapshot.hasData ' + snapshot.hasData.toString());
 
                   return InkWell(
                       onTap: () {
                         // inimah buat edit
-                        userBox.write('editrestoid', snapshot.data!.id);
-                        userBox.write(
-                            'editmerchantid', snapshot.data!['merchantID']);
+                        userBox.write('editmerchantid', snapshot.data!.id);
                         // inimah buat paket
 
                         Get.defaultDialog(
@@ -230,7 +284,16 @@ class RestoController extends GetxController {
                                     TextStyle(color: GlobalVar.to.primaryText),
                               ),
                               onPressed: () {
-                                RestoDb.takeResto();
+                                //yg merchantidx dibadingkan dulu
+                                // barangkali masih ada dari merchnat id
+                                // lain, karena mau resrt shopcart
+                                GlobalVar.to.merchantnamex.value =
+                                    snapshot.data!['merchantName'];
+                                GlobalVar.to.merchantaddressx.value =
+                                    snapshot.data!['merchantAddress'];
+                                GlobalVar.to.merchantimageurlx.value =
+                                    snapshot.data!['merchantImageurl'];
+                                RestoDb.takeMymerchant();
                               },
                             ),
                             TextButton(
@@ -240,8 +303,7 @@ class RestoController extends GetxController {
                                     TextStyle(color: GlobalVar.to.primaryText),
                               ),
                               onPressed: () {
-                                RestoDb.deleteResto(
-                                    MainController.to.restoidx.value);
+                                RestoDb.deleteMymerchant(snapshot.data!.id);
                               },
                             ),
                           ],
@@ -267,7 +329,7 @@ class RestoController extends GetxController {
                                           borderRadius:
                                               BorderRadius.circular(8.0),
                                           child: Image.network(
-                                              '${snapshot.data!.get('restoImageurl')}',
+                                              '${snapshot.data!.get('merchantImageurl')}',
                                               width: 45.0,
                                               fit: BoxFit.fitWidth,
                                               loadingBuilder:
@@ -302,13 +364,14 @@ class RestoController extends GetxController {
                                                           Alignment.centerLeft,
                                                       child: Text(
                                                         snapshot.data!.get(
-                                                                'restoName') ??
+                                                                'merchantName') ??
                                                             "",
                                                         style: const TextStyle(
                                                             color: Colors.black,
+                                                            fontSize: 18,
                                                             fontWeight:
                                                                 FontWeight
-                                                                    .normal),
+                                                                    .bold),
                                                       ),
                                                     ),
                                                   )
@@ -323,13 +386,14 @@ class RestoController extends GetxController {
                                                           Alignment.centerLeft,
                                                       child: Text(
                                                         snapshot.data!.get(
-                                                                'restoPhone') ??
+                                                                'merchantAddress') ??
                                                             "",
                                                         style: const TextStyle(
                                                             color: Colors.black,
+                                                            fontSize: 16,
                                                             fontWeight:
                                                                 FontWeight
-                                                                    .normal),
+                                                                    .bold),
                                                       ),
                                                     ),
                                                   )
@@ -343,7 +407,7 @@ class RestoController extends GetxController {
                                                       alignment:
                                                           Alignment.centerLeft,
                                                       child: Text(
-                                                        '${snapshot.data!.get('restoAddress')}',
+                                                        '${snapshot.data!.get('merchantPhone')}',
                                                         style: const TextStyle(
                                                             color: Colors.black,
                                                             fontWeight:
@@ -373,8 +437,8 @@ class RestoController extends GetxController {
     }
   }
 
-  _applicationStream(String id) {
+  _mymerchantStream(String id) {
     print('_applicationStream $id');
-    return firebaseFirestore.collection('restos').doc(id).snapshots();
+    return firebaseFirestore.collection('merchants').doc(id).snapshots();
   }
 }

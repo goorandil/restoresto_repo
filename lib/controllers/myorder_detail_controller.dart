@@ -94,7 +94,8 @@ class MyorderDetailController extends GetxController {
                                       '${snapshot.data!.docs[index]['menuName']}',
                                       style: const TextStyle(
                                           color: Colors.black,
-                                          fontWeight: FontWeight.normal),
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold),
                                     ),
                                   ),
                                 )
@@ -110,7 +111,8 @@ class MyorderDetailController extends GetxController {
                                       '${snapshot.data!.docs[index]['menuDescription']}',
                                       style: const TextStyle(
                                           color: Colors.black,
-                                          fontWeight: FontWeight.normal),
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold),
                                     ),
                                   ),
                                 )
@@ -123,10 +125,11 @@ class MyorderDetailController extends GetxController {
                                   child: Align(
                                     alignment: Alignment.centerLeft,
                                     child: Text(
+                                      //  '${snapshot.data!.docs[index]['menuPrice']}',
                                       'Rp. ${saldo.format(int.parse(snapshot.data!.docs[index]['menuPrice'].toString()))}',
                                       style: const TextStyle(
                                           color: Colors.black,
-                                          fontWeight: FontWeight.normal),
+                                          fontWeight: FontWeight.bold),
                                     ),
                                   ),
                                 )
@@ -142,7 +145,7 @@ class MyorderDetailController extends GetxController {
                                       '${'Qty'.tr} : ${snapshot.data!.docs[index]['qty']}',
                                       style: const TextStyle(
                                           color: Colors.black,
-                                          fontWeight: FontWeight.normal),
+                                          fontWeight: FontWeight.bold),
                                     ),
                                   ),
                                 )
@@ -155,6 +158,7 @@ class MyorderDetailController extends GetxController {
                                   child: Align(
                                     alignment: Alignment.topRight,
                                     child: Text(
+                                      //   '${snapshot.data!.docs[index]['sumtot']}',
                                       'Rp. ${saldo.format(int.parse(snapshot.data!.docs[index]['sumtot'].toString()))}',
                                       style: const TextStyle(
                                           fontSize: 18,

@@ -5,18 +5,22 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:restoresto_repo/database/main_db.dart';
+import 'package:restoresto_repo/views/login_page.dart';
 import 'package:restoresto_repo/views/main_page.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
+import 'binding/main_binding.dart';
 import 'firebase_options.dart';
 import 'helper/firebase_auth_constants.dart';
 import 'helper/global_var.dart';
 import 'helper/languages.dart';
+import 'routes/app_pages.dart';
 import 'utils/dynamic_link_service.dart';
 
 final Future<FirebaseApp> _initialization = Firebase.initializeApp(
   options: DefaultFirebaseOptions.currentPlatform,
 );
-
+late Widget firstWidget;
 String tag = 'main.dart ';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,6 +32,7 @@ Future<void> main() async {
 
   DynamicLinkService.initDynamicLinks();
 
+/*
   firebaseAuth.authStateChanges().listen((User? user) async {
     if (user == null) {
       //  await firebaseAuth.signInAnonymously();
@@ -55,11 +60,21 @@ Future<void> main() async {
       print('User is signed ${user.uid}');
       print('User is signed ${user.email}');
       // kalau user udah ada, lansung cek resto
-      MainDb.getResto(user.uid);
+  
     }
   });
-
+*/
+  if (firebaseAuth.currentUser != null) {
+    firstWidget = MainPage();
+  } else {
+    firstWidget = LoginPage();
+  }
   Get.put(GlobalVar());
+  print('$tag merchantidx ${GlobalVar.to.merchantidx.value}');
+  print('$tag merchantnamex ${GlobalVar.to.merchantnamex.value}');
+  print('$tag merchantaddressx ${GlobalVar.to.merchantaddressx.value}');
+  print('$tag merchantimageurlx ${GlobalVar.to.merchantimageurlx.value}');
+
   runApp(const MyApp());
 }
 
@@ -92,7 +107,10 @@ class MyApp extends StatelessWidget {
               colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.teal)
                   .copyWith(secondary: const Color(0xFFFFFFFF)),
             ),
-            home: MainPage(),
+            initialBinding: MainBinding(),
+            getPages: AppPages.pages,
+            home: firstWidget,
+            builder: EasyLoading.init(),
           );
           //  LoginPage(title: 'Contreng! Kampus'),
           //  );

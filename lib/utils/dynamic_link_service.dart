@@ -30,14 +30,15 @@ class DynamicLinkService {
         print('DynamicLinkPage  initDynamicLinks merchantid $merchantid');
         print('DynamicLinkPage  initDynamicLinks fallback $fallback');
 
-        GlobalVar eventdatax = Get.put(GlobalVar());
-        MainDb.updateUidResto(restoid, merchantid);
-        MainDb.updateMyResto(restoid, merchantid);
-        MainController.to.restoidx.value = restoid!;
+        //  GlobalVar eventdatax = Get.put(GlobalVar());
+        //     MainDb.updateUidResto(restoid, merchantid);
+        //    MainDb.updateMyResto(restoid, merchantid);
+        MainDb.updateUidMerchant(merchantid);
+        MainDb.updateMymerchant(merchantid);
+        MainController.to.merchantidx.value = merchantid!;
         MainController().update();
 
-        eventdatax.eventcodex('$restoid');
-        eventdatax.eventidx('$merchantid');
+        //  eventdatax.eventidx('$merchantid');
 
         if (_auth.currentUser != null) {
           print("DynamicLinkPage  onlink Current user");
@@ -76,9 +77,12 @@ class DynamicLinkService {
         eventdatax.eventcodex('$restoid');
         eventdatax.eventidx('$merchantid');
 
-        MainDb.updateUidResto(restoid, merchantid);
-        MainDb.updateMyResto(restoid, merchantid);
-        MainDb.getCat(restoid!);
+        //     MainDb.updateUidResto(restoid, merchantid);
+        //    MainDb.updateMyResto(restoid, merchantid);
+        MainDb.updateUidMerchant(merchantid);
+        MainDb.updateMymerchant(merchantid);
+        //GlobalVar.to.categorylistx.clear();
+        //  MainDb.getCategories(merchantid!);
         MainController().update();
         if (_auth.currentUser != null) {
           print("DynamicLinkPage    Current user");
@@ -153,7 +157,7 @@ class DynamicLinkService {
       uriPrefix: "https://restoresto.page.link",
       androidParameters: const AndroidParameters(
         packageName: "com.bingkaiapp.restoresto",
-        minimumVersion: 30,
+        minimumVersion: 25,
       ),
       iosParameters:
           const IOSParameters(bundleId: "com.bingkaiapp.restoresto.ios"),

@@ -23,7 +23,7 @@ class CheckoutDb {
         'iupdatedAt': DateTime.now().millisecondsSinceEpoch ~/ 1000,
         //   'icreatedAt': DateTime.now().millisecondsSinceEpoch ~/ 1000,
       }).whenComplete(() {
-        MyaccountController.to.getUserData();
+        //   MyaccountController.to.getUserData();
         Get.to(() => MyaccountPage());
       });
     else
@@ -36,9 +36,9 @@ class CheckoutDb {
         'userAddress': userBox.read('useraddress'),
         'userImageurl': value,
       }).whenComplete(() {
-        ProfileController.to.imageFile = null;
+        //  ProfileController.to.imageFile = null;
         print('addNewTopup whenComplete userid ${userBox.read('userid')}');
-        MyaccountController.to.getUserData();
+        //MyaccountController.to.getUserData();
         Get.to(() => MyaccountPage());
       });
   }
@@ -58,13 +58,14 @@ class CheckoutDb {
     var idatex = DateTime.now().millisecondsSinceEpoch ~/ 1000;
 
     var orderData = {
+      'historyStatus': false,
       'userID': userBox.read('userid'),
       'userName': userBox.read('username'),
       'orderTotal': userBox.read('ordertotal'),
       'sumtotStr': userBox.read('sumtotstr'),
       'tableNumber': userBox.read('tablenumber'),
       'restoID': userBox.read('restoid'),
-      'merchantID': orderBox.read('merchantid'),
+      'merchantID': GlobalVar.to.merchantidx.value,
       'orderStatus': 'Proses',
       'createdAt': datex,
       'updatedAt': datex,
@@ -75,7 +76,7 @@ class CheckoutDb {
 // order admin
     firebaseFirestore
         .collection('orders')
-        .doc('${userBox.read('restoid')}')
+        .doc('${GlobalVar.to.merchantidx.value}')
         .collection('order')
         .add(orderData)
         .then((value) {
@@ -83,8 +84,8 @@ class CheckoutDb {
       firebaseFirestore
           .collection('myorders')
           .doc("${firebaseAuth.currentUser!.uid}")
-          .collection('restoid')
-          .doc('${userBox.read('restoid')}')
+          .collection('merchantid')
+          .doc('${GlobalVar.to.merchantidx.value}')
           .collection('myorder')
           .doc(value.id)
           .set(orderData);
@@ -105,7 +106,7 @@ class CheckoutDb {
           'menuPrice': element['menuprice'],
           'menuImageurl': element['menuimageurl'],
           'menuStatus': element['menustatus'],
-          'menuCategory': element['menucategory'],
+          'menuCategoryName': element['menucategoryname'],
           'menuCategoryid': element['menucategoryid'],
           'qty': element['qty'],
           'sumtot': element['sumtot'],
@@ -117,7 +118,7 @@ class CheckoutDb {
         };
         firebaseFirestore
             .collection('orderdetails')
-            .doc('${userBox.read('restoid')}')
+            .doc('${GlobalVar.to.merchantidx.value}')
             .collection('orderid')
             .doc(value.id)
             .collection('orderdetail')
@@ -126,8 +127,8 @@ class CheckoutDb {
           firebaseFirestore
               .collection('myorders')
               .doc("${firebaseAuth.currentUser!.uid}")
-              .collection('restoid')
-              .doc('${userBox.read('restoid')}')
+              .collection('merchantid')
+              .doc('${GlobalVar.to.merchantidx.value}')
               .collection('myorder')
               .doc(value.id)
               .collection('myorderdetail')
@@ -137,7 +138,7 @@ class CheckoutDb {
             print('shopcartList $shopcartList');
             print('restoid ada ${userBox.read('restoid')}');
             shopcartList.clear();
-            MainController.to.numshopcart.value = 0;
+            //    MainController.to.numshopcart.value = 0;
             print('shopcartList $shopcartList');
             print('restoid ada ${userBox.read('restoid')}');
           });

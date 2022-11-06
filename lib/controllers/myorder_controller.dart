@@ -22,6 +22,8 @@ class MyorderController extends GetxController {
   RxBool camstate = false.obs;
   late String _scanBarcode = 'Unknown';
   var f = DateFormat('dd MMM yyyy hh:mm');
+  final saldo = NumberFormat.currency(
+      locale: 'id_ID', customPattern: '#,###', symbol: 'Rp.', decimalDigits: 0);
 
   String scannedQrcode = '';
 
@@ -336,7 +338,8 @@ class MyorderController extends GetxController {
                         child: Align(
                           alignment: Alignment.bottomRight,
                           child: Text(
-                            '${snapshot.data!.docs[index]['orderTotal']}',
+                            //    '${snapshot.data!.docs[index]['orderTotal']}',
+                            'Rp. ${saldo.format(int.parse(userBox.read('ordertotal').toString()))}',
                             style: const TextStyle(
                                 fontSize: 18,
                                 color: Colors.red,

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:path/path.dart';
 
 import 'package:firebase_storage/firebase_storage.dart';
@@ -16,13 +17,8 @@ import '../helper/global_var.dart';
 import '../views/myaccount_page.dart';
 
 class ProfileController extends GetxController {
-  static ProfileController get to => Get.find<ProfileController>();
-
-  RxString pageTitle = 'Profil Saya'.obs;
-  RxString saveData = 'Simpan'.obs;
-  RxString changeData = 'Ubah'.obs;
-
   RxString userid = ''.obs;
+  final String tag = 'ProfileController ';
 
   RxString username = RxString('');
   RxString useremail = RxString('');
@@ -115,13 +111,8 @@ class ProfileController extends GetxController {
     taskSnapshot.ref
         .getDownloadURL()
         .then((value) => ProfileDb.updateProfile(value));
-    print('a $imageFile');
-    imageFile = null;
-    print('b $imageFile');
-    MyaccountController.to.getUserData();
-    //   taskSnapshot.ref.getDownloadURL().then(
-    //       (value) => print("Done: $value"),
-    //   );
+    EasyLoading.dismiss();
+    Get.toNamed('/myaccount');
 
     uploadTask.snapshotEvents.listen((TaskSnapshot snapshot) {
       print('Task state: ${snapshot.state}');
@@ -169,9 +160,9 @@ class ProfileController extends GetxController {
   void onInit() {
     super.onInit();
 
-    submitFunc.value = submitFunction();
-    debounce<String>(username, validations,
-        time: const Duration(milliseconds: 500));
+    //   submitFunc.value = submitFunction();
+    //   debounce<String>(username, validations,
+    //      time: const Duration(milliseconds: 500));
 
     //  debounce<String>(userphone, validations,
     //       time: const Duration(milliseconds: 500));
@@ -196,24 +187,6 @@ class ProfileController extends GetxController {
         submitFunc.value = null;
       }
     }
-  }
-
-  AppBar buildAppBar() {
-    return AppBar(
-      backgroundColor: GlobalVar.to.primary,
-      leading: Builder(
-        builder: (BuildContext context) {
-          return IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () {
-              Get.off(() => MyaccountPage());
-            },
-          );
-        },
-      ),
-      centerTitle: true,
-      title: Text(pageTitle.value),
-    );
   }
 
   bool lengthOK(String val, {int minLen = 5}) {
@@ -256,13 +229,17 @@ class ProfileController extends GetxController {
   }
 
   Future<bool> Function() submitFunction() {
+    if (imageFile != null) {
+      print('$tag submitFunction if');
+      uploadImageToFirebase();
+    } else {
+      print('$tag submitFunction else');
+      ProfileDb.updateProfile('');
+      EasyLoading.dismiss();
+      Get.toNamed('/myaccount');
+    }
+
     return () async {
-      print(
-          'Make database call to create ${username.value} ${userBox.read('userid')} account');
-      if (imageFile != null)
-        uploadImageToFirebase();
-      else
-        ProfileDb.updateProfile('');
       //   DisplayAlertDialog.okButton('Notifikasi', 'Profil sudah diubah');
       await Future.delayed(const Duration(seconds: 1), () => showIndi());
       return true;
