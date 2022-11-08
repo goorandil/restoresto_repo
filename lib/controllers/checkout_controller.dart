@@ -17,6 +17,7 @@ import 'package:restoresto_repo/views/shopping_cart_page.dart';
 
 import '../database/checkout_db.dart';
 import '../database/profile_db.dart';
+import '../helper/firebase_auth_constants.dart';
 import '../helper/global_var.dart';
 import '../views/myaccount_page.dart';
 
@@ -126,12 +127,18 @@ class CheckoutController extends GetxController {
   }
 
   Future<bool> Function() submitFunction() {
+    print('submitFunction');
     return () async {
       //   DisplayAlertDialog.okButton('Notifikasi', 'Profil sudah diubah');
       await Future.delayed(const Duration(seconds: 1), () => showIndi());
+      print('submitFunction');
 
       if (shopcartList.isNotEmpty) {
+        print('submitFunction isNotEmpty');
         CheckoutDb.updateOrder();
+        orderNotifications(
+            '${userBox.read('tablenumber')}', '${userBox.read('ordertotal')}');
+
         Get.defaultDialog(
           titlePadding: const EdgeInsets.all(15),
           contentPadding: const EdgeInsets.all(15),
@@ -162,6 +169,24 @@ class CheckoutController extends GetxController {
         return false;
       }
     };
+  }
+
+  static void orderNotifications(tablenumber, ordertotal) {
+    print('orderNotifications');
+    var datex = DateTime.now();
+    var idatex = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+    var title = 'Order baru dari ${GlobalVar.to.usernamex.value}';
+    var notif = 'Meja : $tablenumber, $ordertotal, }';
+    var data = {
+      'messageTitle': title,
+      'messageNotif': notif,
+      'fcmToken': GlobalVar.to.merchantfcmtokenx.value,
+      'createdAt': datex,
+      'updatedAt': datex,
+      'iupdatedAt': idatex,
+      'icreatedAt': idatex,
+    };
+    firebaseFirestore.collection('sendNotifications').add(data);
   }
 
   showIndi() {

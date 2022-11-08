@@ -24,10 +24,6 @@ class RestoPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('$tag merchantidx ${GlobalVar.to.merchantidx.value}');
-    print('$tag merchantnamex ${GlobalVar.to.merchantnamex.value}');
-    print('$tag merchantaddressx ${GlobalVar.to.merchantaddressx.value}');
-    print('$tag merchantimageurlx ${GlobalVar.to.merchantimageurlx.value}');
     return WillPopScope(
         onWillPop: _onWillPop,
         child: GetBuilder<RestoController>(

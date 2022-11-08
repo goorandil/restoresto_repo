@@ -203,7 +203,7 @@ class MainController extends GetxController {
     if (snapshot.hasData) {
       //   print('getMenuList ${snapshot.data!.docs.length}');
       return ListView.builder(
-          padding: const EdgeInsets.fromLTRB(0, 5, 0, 10),
+          padding: const EdgeInsets.fromLTRB(10, 5, 10, 10),
           itemCount: snapshot.data!.docs.length,
           itemBuilder: (context, index) {
             return getDataMenu(snapshot, index);

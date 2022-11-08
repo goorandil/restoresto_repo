@@ -287,6 +287,8 @@ class RestoController extends GetxController {
                                 //yg merchantidx dibadingkan dulu
                                 // barangkali masih ada dari merchnat id
                                 // lain, karena mau resrt shopcart
+                                GlobalVar.to.merchantfcmtokenx.value =
+                                    snapshot.data!['fcmToken'];
                                 GlobalVar.to.merchantnamex.value =
                                     snapshot.data!['merchantName'];
                                 GlobalVar.to.merchantaddressx.value =

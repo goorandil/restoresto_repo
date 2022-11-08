@@ -326,7 +326,16 @@ class MyorderController extends GetxController {
                         child: Align(
                           alignment: Alignment.centerLeft,
                           child: Text(
-                            'Status : ${snapshot.data!.docs[index]['orderStatus']}',
+                            '${snapshot.data!.docs[index]['orderStatus']}' ==
+                                    'request'
+                                ? 'Status : ${'Request'.tr}'
+                                : '${snapshot.data!.docs[index]['orderStatus']}' ==
+                                        'process'
+                                    ? 'Status : ${'Process'.tr}'
+                                    : '${snapshot.data!.docs[index]['orderStatus']}' ==
+                                            'completed'
+                                        ? 'Status : ${'Completed'.tr}'
+                                        : 'Status : ${'Cancel'.tr}',
                             style: const TextStyle(
                                 color: Colors.black,
                                 fontWeight: FontWeight.bold),

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:restoresto_repo/controllers/checkout_controller.dart';
 import 'package:restoresto_repo/database/main_db.dart';
 import 'package:restoresto_repo/helper/firebase_auth_constants.dart';
 import 'package:restoresto_repo/views/checkout_page.dart';
@@ -428,6 +429,7 @@ class ShoppingCartPage extends StatelessWidget {
                                               print(
                                                   "Tapped shopcart ${MainController.to.emailstatusx.value}");
                                               Get.toNamed('/checkout');
+
                                               /*   MainController
                                                       .to.emailstatusx.value
                                                   ? controller.getUserData()

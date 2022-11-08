@@ -59,14 +59,16 @@ class CheckoutDb {
 
     var orderData = {
       'historyStatus': false,
-      'userID': userBox.read('userid'),
+      'userID': firebaseAuth.currentUser!.uid,
       'userName': userBox.read('username'),
       'orderTotal': userBox.read('ordertotal'),
       'sumtotStr': userBox.read('sumtotstr'),
       'tableNumber': userBox.read('tablenumber'),
       'restoID': userBox.read('restoid'),
       'merchantID': GlobalVar.to.merchantidx.value,
-      'orderStatus': 'Proses',
+      'userFcmtoken': GlobalVar.to.userfcmtokenx.value,
+      'merchantFcmtoken': GlobalVar.to.merchantfcmtokenx.value,
+      'orderStatus': 'request',
       'createdAt': datex,
       'updatedAt': datex,
       'iupdatedAt': idatex,
@@ -97,7 +99,7 @@ class CheckoutDb {
         var orderdetailData = {
           'itemID': packageIdx,
           'orderID': value.id,
-          'userID': userBox.read('userid'),
+          'userID': firebaseAuth.currentUser!.uid,
           'userName': userBox.read('username'),
           'userEmail': userBox.read('useremail'),
           'menuID': element['menuid'],

@@ -33,6 +33,7 @@ class PageAppBar extends StatelessWidget implements PreferredSizeWidget {
               GlobalVar.to.merchantnamex.value = '';
               GlobalVar.to.merchantaddressx.value = '';
               GlobalVar.to.merchantimageurlx.value = '';
+              userBox.remove('sumtot');
               Get.toNamed(backbutton);
             });
       }),

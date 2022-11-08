@@ -16,11 +16,13 @@ class GlobalVar extends GetxController {
   RxString usernamex = "".obs;
   RxString useremailx = "".obs;
   RxString userimageurlx = "".obs;
+  RxString userfcmtokenx = "".obs;
 
   RxString merchantidx = "".obs;
   RxString merchantnamex = "".obs;
   RxString merchantimageurlx = "".obs;
   RxString merchantaddressx = "".obs;
+  RxString merchantfcmtokenx = "".obs;
 
   RxList categorylistx = [].obs;
 

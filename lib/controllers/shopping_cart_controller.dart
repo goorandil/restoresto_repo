@@ -35,6 +35,7 @@ class ShoppingCartController extends GetxController {
       sumtot = sumtot! + int.parse(element['sumtot']);
       userBox.write('sumtotstr', sumtot.toString());
     });
+    userBox.write('sumtot', sumtot);
     return '$sumtot';
   }
 

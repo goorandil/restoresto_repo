@@ -48,10 +48,6 @@ class MainPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     MainDb.getMerchantData();
-    print('$tag merchantidx ${GlobalVar.to.merchantidx.value}');
-    print('$tag merchantnamex ${GlobalVar.to.merchantnamex.value}');
-    print('$tag merchantaddressx ${GlobalVar.to.merchantaddressx.value}');
-    print('$tag merchantimageurlx ${GlobalVar.to.merchantimageurlx.value}');
     return WillPopScope(
         onWillPop: _onWillPop,
         child: GetBuilder<MainController>(
@@ -66,8 +62,6 @@ class MainPage extends StatelessWidget {
                 ),
                 body: Container(
                   alignment: Alignment.topCenter,
-                  padding: const EdgeInsets.all(10),
-                  margin: const EdgeInsets.symmetric(horizontal: 5),
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
@@ -108,149 +102,152 @@ class MainPage extends StatelessWidget {
                               ),
                             ),
                           */
-                        SizedBox(
-                          height: 95,
-                          child: Card(
-                            color: GlobalVar.to.primaryCard,
-                            elevation: 5,
-                            clipBehavior: Clip.antiAlias,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                            ),
-                            child: Container(
-                              padding: EdgeInsets.fromLTRB(15, 15, 15, 0),
-                              child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Obx(
-                                      () => GlobalVar.to.merchantimageurlx.value
-                                              .isNotEmpty
+                        Container(
+                          padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+                          child: SizedBox(
+                            height: 95,
+                            child: Card(
+                              color: GlobalVar.to.primaryCard,
+                              elevation: 5,
+                              clipBehavior: Clip.antiAlias,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                              child: Container(
+                                padding: EdgeInsets.fromLTRB(15, 15, 15, 0),
+                                child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Obx(
+                                        () => GlobalVar.to.merchantimageurlx
+                                                .value.isNotEmpty
+                                            ? Expanded(
+                                                flex: 1,
+                                                child: ClipRRect(
+                                                    borderRadius: BorderRadius.circular(
+                                                        8.0),
+                                                    child: Image.network(
+                                                        GlobalVar
+                                                            .to
+                                                            .merchantimageurlx
+                                                            .value,
+                                                        width: 55.0,
+                                                        fit: BoxFit.fitWidth,
+                                                        loadingBuilder:
+                                                            (BuildContext context,
+                                                                Widget child,
+                                                                ImageChunkEvent? loadingProgress) {
+                                                      if (loadingProgress ==
+                                                          null) {
+                                                        return child;
+                                                      }
+                                                      return Center(
+                                                        child:
+                                                            CircularProgressIndicator(),
+                                                      );
+                                                    })))
+                                            : Expanded(
+                                                flex: 4,
+                                                child: Container(
+                                                  padding:
+                                                      const EdgeInsets.all(10),
+                                                  child: Text(
+                                                    'no resto'.tr,
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                )),
+                                      ),
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      Obx(() => GlobalVar.to.merchantimageurlx
+                                              .value.isNotEmpty
                                           ? Expanded(
-                                              flex: 1,
-                                              child: ClipRRect(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          8.0),
-                                                  child: Image.network(
-                                                      GlobalVar
-                                                          .to
-                                                          .merchantimageurlx
-                                                          .value,
-                                                      width: 55.0,
-                                                      fit: BoxFit.fitWidth,
-                                                      loadingBuilder:
-                                                          (BuildContext context,
-                                                              Widget child,
-                                                              ImageChunkEvent? loadingProgress) {
-                                                    if (loadingProgress ==
-                                                        null) {
-                                                      return child;
-                                                    }
-                                                    return Center(
-                                                      child:
-                                                          CircularProgressIndicator(),
-                                                    );
-                                                  })))
-                                          : Expanded(
-                                              flex: 4,
-                                              child: Container(
-                                                padding:
-                                                    const EdgeInsets.all(10),
-                                                child: Text(
-                                                  'no resto'.tr,
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ),
-                                              )),
-                                    ),
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-                                    Obx(() => GlobalVar.to.merchantimageurlx
-                                            .value.isNotEmpty
-                                        ? Expanded(
-                                            flex: 3,
-                                            child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: <Widget>[
-                                                  Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment.end,
-                                                    children: [
-                                                      Expanded(
-                                                        flex: 2,
-                                                        child: Align(
-                                                          alignment: Alignment
-                                                              .centerLeft,
-                                                          child: Text(
-                                                            GlobalVar
-                                                                .to
-                                                                .merchantnamex
-                                                                .value,
-                                                            maxLines: 1,
-                                                            style: const TextStyle(
-                                                                color: Colors
-                                                                    .black,
-                                                                fontSize: 17,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold),
+                                              flex: 3,
+                                              child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: <Widget>[
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment.end,
+                                                      children: [
+                                                        Expanded(
+                                                          flex: 2,
+                                                          child: Align(
+                                                            alignment: Alignment
+                                                                .centerLeft,
+                                                            child: Text(
+                                                              GlobalVar
+                                                                  .to
+                                                                  .merchantnamex
+                                                                  .value,
+                                                              maxLines: 1,
+                                                              style: const TextStyle(
+                                                                  color: Colors
+                                                                      .black,
+                                                                  fontSize: 17,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold),
+                                                            ),
                                                           ),
-                                                        ),
-                                                      )
-                                                    ],
-                                                  ),
-                                                  Row(
-                                                    children: [
-                                                      Expanded(
-                                                        flex: 2,
-                                                        child: Align(
-                                                          alignment: Alignment
-                                                              .centerLeft,
-                                                          child: Text(
-                                                            GlobalVar
-                                                                .to
-                                                                .merchantaddressx
-                                                                .value,
-                                                            maxLines: 2,
-                                                            style: const TextStyle(
-                                                                color: Colors
-                                                                    .black,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold),
+                                                        )
+                                                      ],
+                                                    ),
+                                                    Row(
+                                                      children: [
+                                                        Expanded(
+                                                          flex: 2,
+                                                          child: Align(
+                                                            alignment: Alignment
+                                                                .centerLeft,
+                                                            child: Text(
+                                                              GlobalVar
+                                                                  .to
+                                                                  .merchantaddressx
+                                                                  .value,
+                                                              maxLines: 2,
+                                                              style: const TextStyle(
+                                                                  color: Colors
+                                                                      .black,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold),
+                                                            ),
                                                           ),
-                                                        ),
-                                                      )
-                                                    ],
-                                                  ),
-                                                ]))
-                                        : SizedBox(
-                                            width: 0,
-                                          )),
-                                    Expanded(
-                                      flex: 1,
-                                      child: Align(
-                                          alignment: Alignment.topRight,
-                                          child: TextButton(
-                                            child: Text(
-                                              'Change'.tr,
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.red),
-                                            ),
-                                            style: TextButton.styleFrom(
-                                                fixedSize:
-                                                    Size.fromHeight(150)),
-                                            onPressed: () {
-                                              Get.toNamed('/resto');
-                                            },
-                                          )),
-                                    ),
-                                  ]),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  ]))
+                                          : SizedBox(
+                                              width: 0,
+                                            )),
+                                      Expanded(
+                                        flex: 1,
+                                        child: Align(
+                                            alignment: Alignment.topRight,
+                                            child: TextButton(
+                                              child: Text(
+                                                'Change'.tr,
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.red),
+                                              ),
+                                              style: TextButton.styleFrom(
+                                                  fixedSize:
+                                                      Size.fromHeight(150)),
+                                              onPressed: () {
+                                                Get.toNamed('/resto');
+                                              },
+                                            )),
+                                      ),
+                                    ]),
+                              ),
                             ),
                           ),
                         ),
@@ -365,13 +362,14 @@ class MainPage extends StatelessWidget {
                                                           size: 25,
                                                           color: Colors.black,
                                                         ),
-                                                  Text(
+                                                  Expanded(
+                                                      child: Text(
                                                     'Tray'.tr,
                                                     style: TextStyle(
                                                         color: Colors.black,
                                                         fontSize: 12),
                                                     textAlign: TextAlign.left,
-                                                  ),
+                                                  )),
                                                 ],
                                               ),
                                               onTap: () {
@@ -424,13 +422,14 @@ class MainPage extends StatelessWidget {
                                                 size: 25,
                                                 color: Colors.black,
                                               ),
-                                              Text(
+                                              Expanded(
+                                                  child: Text(
                                                 'Category'.tr,
                                                 style: TextStyle(
                                                     color: Colors.black,
                                                     fontSize: 12),
                                                 textAlign: TextAlign.left,
-                                              ),
+                                              )),
                                             ],
                                           ),
                                           onTap: () {
@@ -568,13 +567,14 @@ class MainPage extends StatelessWidget {
                                                 size: 25,
                                                 color: Colors.black,
                                               ),
-                                              Text(
+                                              Expanded(
+                                                  child: Text(
                                                 'My Order'.tr,
                                                 style: TextStyle(
                                                     color: Colors.black,
                                                     fontSize: 12),
                                                 textAlign: TextAlign.left,
-                                              ),
+                                              )),
                                             ],
                                           ),
                                           onTap: () {

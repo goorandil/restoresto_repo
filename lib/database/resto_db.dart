@@ -123,6 +123,7 @@ class RestoDb {
         .delete();
     Get.back();
     GlobalVar.to.merchantidx.value = '';
+    GlobalVar.to.merchantfcmtokenx.value = '';
     Get.toNamed('/resto');
   }
 }

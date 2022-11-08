@@ -70,10 +70,6 @@ Future<void> main() async {
     firstWidget = LoginPage();
   }
   Get.put(GlobalVar());
-  print('$tag merchantidx ${GlobalVar.to.merchantidx.value}');
-  print('$tag merchantnamex ${GlobalVar.to.merchantnamex.value}');
-  print('$tag merchantaddressx ${GlobalVar.to.merchantaddressx.value}');
-  print('$tag merchantimageurlx ${GlobalVar.to.merchantimageurlx.value}');
 
   runApp(const MyApp());
 }

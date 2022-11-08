@@ -70,6 +70,7 @@ class MainDb {
               value.data()!['merchantImageurl'];
           GlobalVar.to.merchantaddressx.value =
               value.data()!['merchantAddress'];
+          GlobalVar.to.merchantfcmtokenx.value = value.data()!['fcmToken'];
 
           print('checkUidMerchant ada ${GlobalVar.to.merchantidx.value}');
 
@@ -449,11 +450,13 @@ class MainDb {
           .doc('${GlobalVar.to.merchantidx.value}')
           .get()
           .then((value) {
+        GlobalVar.to.merchantfcmtokenx.value = value.data()!['fcmToken'];
         GlobalVar.to.merchantnamex.value = value.data()!['merchantName'];
         GlobalVar.to.merchantaddressx.value = value.data()!['merchantAddress'];
         GlobalVar.to.merchantimageurlx.value =
             value.data()!['merchantImageurl'];
 
+        print('$tag getMerchantData ${GlobalVar.to.merchantfcmtokenx.value}');
         print('$tag getMerchantData ${GlobalVar.to.merchantidx.value}');
         print('$tag getMerchantData ${GlobalVar.to.merchantnamex.value}');
         print('$tag getMerchantData ${GlobalVar.to.merchantaddressx.value}');
@@ -474,12 +477,14 @@ class MainDb {
         .doc(firebaseAuth.currentUser!.uid)
         .get()
         .then((value) {
+      GlobalVar.to.userfcmtokenx.value = value.data()!['fcmToken'];
       GlobalVar.to.usernamex.value = value.data()!['userName'];
       GlobalVar.to.useremailx.value = value.data()!['userEmail'];
       GlobalVar.to.userimageurlx.value = value.data()!['userImageurl'];
       GlobalVar.to.useridx.value = value.id;
       GlobalVar.to.merchantidx.value = value.data()!['merchantID'];
 
+      print('getUserData userfcmtoken ${value.data()!['fcmToken']}');
       print('getUserData merchantID ${value.data()!['merchantID']}');
       print('getUserData userName ${value.data()!['userName']}');
       print('getUserData userEmail ${value.data()!['userEmail']}');

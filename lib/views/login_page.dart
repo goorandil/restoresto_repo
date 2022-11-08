@@ -12,10 +12,6 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('$tag merchantidx ${GlobalVar.to.merchantidx.value}');
-    print('$tag merchantnamex ${GlobalVar.to.merchantnamex.value}');
-    print('$tag merchantaddressx ${GlobalVar.to.merchantaddressx.value}');
-    print('$tag merchantimageurlx ${GlobalVar.to.merchantimageurlx.value}');
     return Scaffold(
         body: Container(
             color: GlobalVar.to.primaryBg,

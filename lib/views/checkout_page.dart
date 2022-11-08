@@ -56,48 +56,56 @@ class CheckoutPage extends StatelessWidget {
                             const SizedBox(
                               height: 10,
                             ),
-                            Obx(
-                              () {
-                                return TextFormField(
-                                    enabled: false,
-                                    controller: controller.ordertotalController,
-                                    //   initialValue: '${userBox.read('username')}',
-                                    style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold),
-                                    onChanged: controller
-                                        .ordertotalChanged, // controller func
-                                    decoration: InputDecoration(
-                                        labelText: 'Total orders'.tr,
-                                        labelStyle: TextStyle(
-                                            color: GlobalVar.to.primary),
-                                        errorText: controller
-                                            .errorTextordertotal.value // obs
-                                        ));
-                              },
+                            Row(
+                              children: [
+                                Expanded(
+                                    child: Text(
+                                  'Total'.tr,
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      color: GlobalVar.to.primaryText,
+                                      fontWeight: FontWeight.bold),
+                                )),
+                                Expanded(
+                                  child: Align(
+                                    alignment: Alignment.centerRight,
+                                    child: Text(
+                                      'Rp. ${controller.saldo.format(int.parse(userBox.read('ordertotal').toString()))}',
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                )
+                              ],
                             ),
-                            const SizedBox(
+                            SizedBox(
                               height: 20,
                             ),
-                            Obx(
-                              () {
-                                return TextFormField(
-                                    enabled: false,
-                                    controller: controller.ordernameController,
-                                    //   initialValue: '${userBox.read('username')}',
-                                    style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold),
-                                    onChanged: controller
-                                        .ordernameChanged, // controller func
-                                    decoration: InputDecoration(
-                                        labelText: 'Name'.tr,
-                                        labelStyle: TextStyle(
-                                            color: GlobalVar.to.primary),
-                                        errorText: controller
-                                            .errorTextordername.value // obs
-                                        ));
-                              },
+                            Row(
+                              children: [
+                                Expanded(
+                                    child: Text(
+                                  'Name'.tr,
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      color: GlobalVar.to.primaryText,
+                                      fontWeight: FontWeight.bold),
+                                )),
+                                Expanded(
+                                  child: Align(
+                                    alignment: Alignment.centerRight,
+                                    child: Text(
+                                      '${userBox.read('username')}',
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                )
+                              ],
                             ),
                             const SizedBox(
                               height: 20,
