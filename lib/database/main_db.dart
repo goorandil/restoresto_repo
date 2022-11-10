@@ -493,6 +493,14 @@ class MainDb {
     });
   }
 
+  static updateFcmToken(String? fcmToken) {
+    var data = {'fcmToken': fcmToken};
+    firebaseFirestore
+        .collection('users')
+        .doc(firebaseAuth.currentUser!.uid)
+        .update(data);
+  }
+
 /*
   static Future<void> addNewUser() async {
     firebaseMessaging.getToken().then((fcmtoken) {

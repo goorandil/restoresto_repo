@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:badges/badges.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
 import 'package:get/get.dart';
@@ -25,6 +26,14 @@ class MainPage extends StatelessWidget {
   final String tag = 'MainPage ';
 
   Future<bool> _onWillPop() async {
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      RemoteNotification? notification = message.notification;
+      AndroidNotification? android = message.notification?.android;
+
+      debugPrint('FirebaseMessaging $notification');
+      debugPrint('FirebaseMessaging $android');
+      debugPrint('FirebaseMessaging ${message.data}');
+    });
     return (await showDialog(
           context: Get.context!,
           builder: (context) => new AlertDialog(
@@ -481,10 +490,58 @@ class MainPage extends StatelessWidget {
                                                                     Get.back();
                                                                   },
                                                                   child: Text(
-                                                                      'Close'
-                                                                          .tr),
+                                                                    'Close'.tr,
+                                                                    style: TextStyle(
+                                                                        color: Colors
+                                                                            .red,
+                                                                        fontSize:
+                                                                            18,
+                                                                        fontWeight:
+                                                                            FontWeight.bold),
+                                                                  ),
                                                                 )),
                                                           ],
+                                                        ),
+                                                        Divider(
+                                                          thickness: 1,
+                                                        ),
+                                                        const SizedBox(
+                                                          height: 0,
+                                                        ),
+                                                        Row(
+                                                          children: [
+                                                            const SizedBox(
+                                                              width: 30,
+                                                            ),
+                                                            Expanded(
+                                                                flex: 2,
+                                                                child: TextButton(
+                                                                    child: Align(
+                                                                        alignment: Alignment.centerLeft,
+                                                                        child: Text(
+                                                                          'See all categories'
+                                                                              .tr,
+                                                                          textAlign:
+                                                                              TextAlign.left,
+                                                                          style: TextStyle(
+                                                                              color: Colors.black,
+                                                                              fontSize: 18,
+                                                                              fontWeight: FontWeight.bold),
+                                                                        )),
+                                                                    onPressed: () {
+                                                                      controller
+                                                                          .setCat(
+                                                                              '',
+                                                                              '');
+                                                                      Get.back();
+                                                                    })),
+                                                            const SizedBox(
+                                                              width: 50,
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        const SizedBox(
+                                                          height: 0,
                                                         ),
                                                         Divider(
                                                           thickness: 1,

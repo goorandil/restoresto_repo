@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intl/date_symbol_data_custom.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -9,6 +11,8 @@ import 'package:intl/date_time_patterns.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:new_version/new_version.dart';
@@ -49,16 +53,75 @@ class MainController extends GetxController {
     update();
   }
 
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+
   final saldo = NumberFormat.currency(
       locale: 'id_ID', customPattern: '#,###', symbol: 'Rp.', decimalDigits: 0);
   final newVersion = NewVersion(
     iOSId: 'com.bingkaiapp.restoresto',
     androidId: 'com.bingkaiapp.restoresto',
   );
+  FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
 
   @override
   Future<void> onInit() async {
+    final fcmToken = await FirebaseMessaging.instance.getToken();
+    debugPrint('fcmToken  $fcmToken');
+    MainDb.updateFcmToken(fcmToken);
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      RemoteNotification? notification = message.notification;
+      AndroidNotification? android = message.notification?.android;
+
+      debugPrint('FirebaseMessaging $notification');
+      debugPrint('FirebaseMessaging $android');
+      debugPrint(
+          'FirebaseMessaging ${message.data}'); // If `onMessage` is triggered with a notification, construct our own
+
+      update();
+
+      // local notification to show to users using the created channel.
+      if (notification != null && android != null) {
+        debugPrint('FirebaseMessaging flutterLocalNotificationsPlugin');
+        flutterLocalNotificationsPlugin.show(
+            notification.hashCode,
+            notification.title,
+            notification.body,
+            NotificationDetails(
+              android: AndroidNotificationDetails(
+                'channel.id',
+                'channel.name',
+                //  'channel.description',
+                icon: android.smallIcon,
+                // other properties...
+              ),
+            ));
+      }
+    });
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      print('A new onMessageOpenedApp event was published!');
+      //   Navigator.pushNamed(context, '/message',
+      //       arguments: MessageArguments(message, true));
+    });
+
+    //final pushNotificationService = PushNotificationService(firebaseMessaging);
+    //pushNotificationService.initialise();
+
     super.onInit();
+
+    NotificationSettings settings = await firebaseMessaging.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
+      sound: true,
+    );
+
+    print('User granted permission: ${settings.authorizationStatus}');
+
     Get.put(GlobalVar());
     GlobalVar.to.categorylistx.clear();
 
@@ -68,6 +131,85 @@ class MainController extends GetxController {
     // MainDb.migrateCat();
     // MainDb.migrateMenu();
     // MainDb.migrateResto();
+
+    await _initializeNotification();
+    super.onInit();
+
+    print('User granted permission: ${settings.authorizationStatus}');
+  }
+
+  Future<void> _initializeNotification() async {
+    const DarwinInitializationSettings initializationSettingsIOS =
+        DarwinInitializationSettings(
+      requestAlertPermission: false,
+      requestBadgePermission: false,
+      requestSoundPermission: false,
+    );
+    const AndroidInitializationSettings initializationSettingsAndroid =
+        AndroidInitializationSettings('ic_notification');
+
+    const InitializationSettings initializationSettings =
+        InitializationSettings(
+      android: initializationSettingsAndroid,
+      iOS: initializationSettingsIOS,
+    );
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+  }
+
+  Future<void> cancelNotification() async {
+    await flutterLocalNotificationsPlugin.cancelAll();
+  }
+
+  Future<void> requestPermissions() async {
+    await flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+            IOSFlutterLocalNotificationsPlugin>()
+        ?.requestPermissions(
+          alert: true,
+          badge: true,
+          sound: true,
+        );
+  }
+
+  Future<void> registerMessage({
+    required int hour,
+    required int minutes,
+    required message,
+  }) async {
+    final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
+    tz.TZDateTime scheduledDate = tz.TZDateTime(
+      tz.local,
+      now.year,
+      now.month,
+      now.day,
+      hour,
+      minutes,
+    );
+
+    await flutterLocalNotificationsPlugin.zonedSchedule(
+      0,
+      'Terimakasih',
+      message,
+      scheduledDate,
+      NotificationDetails(
+        android: AndroidNotificationDetails(
+          'channel id',
+          'channel name',
+          importance: Importance.max,
+          priority: Priority.high,
+          ongoing: true,
+          styleInformation: BigTextStyleInformation(message),
+          icon: 'ic_notification',
+        ),
+        iOS: const DarwinNotificationDetails(
+          badgeNumber: 1,
+        ),
+      ),
+      androidAllowWhileIdle: true,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+      matchDateTimeComponents: DateTimeComponents.time,
+    );
   }
 
   getUserMerchant() async => firebaseFirestore

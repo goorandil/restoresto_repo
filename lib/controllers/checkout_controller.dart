@@ -136,8 +136,9 @@ class CheckoutController extends GetxController {
       if (shopcartList.isNotEmpty) {
         print('submitFunction isNotEmpty');
         CheckoutDb.updateOrder();
-        orderNotifications(
-            '${userBox.read('tablenumber')}', '${userBox.read('ordertotal')}');
+        var ordertotalstr =
+            'Rp. ${saldo.format(int.parse(userBox.read('ordertotal').toString()))}';
+        orderNotifications('${userBox.read('tablenumber')}', ordertotalstr);
 
         Get.defaultDialog(
           titlePadding: const EdgeInsets.all(15),
@@ -172,11 +173,11 @@ class CheckoutController extends GetxController {
   }
 
   static void orderNotifications(tablenumber, ordertotal) {
-    print('orderNotifications');
+    print('orderNotifications $ordertotal');
     var datex = DateTime.now();
     var idatex = DateTime.now().millisecondsSinceEpoch ~/ 1000;
     var title = 'Order baru dari ${GlobalVar.to.usernamex.value}';
-    var notif = 'Meja : $tablenumber, $ordertotal, }';
+    var notif = 'Meja : $tablenumber, $ordertotal';
     var data = {
       'messageTitle': title,
       'messageNotif': notif,
