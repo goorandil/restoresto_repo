@@ -30,21 +30,21 @@ class MainDb {
       });
 
   static getMenu(String categoryid) {
-    print('$tag getMenu categoryid $categoryid');
-    print('$tag getMenu merchantidx ${GlobalVar.to.merchantidx.value}');
+    //  print('$tag getMenu categoryid $categoryid');
+    //  print('$tag getMenu merchantidx ${GlobalVar.to.merchantidx.value}');
     if (GlobalVar.to.merchantidx.value != '') {
-      print('$tag getMenu merchantidx ada');
+      //   print('$tag getMenu merchantidx ada');
       getMerchantData();
       getCategories(GlobalVar.to.merchantidx.value);
       if (categoryid == '') {
-        print('$tag getMenu categoryid kosong');
+        //       print('$tag getMenu categoryid kosong');
         return firebaseFirestore
             .collection("menus")
             .doc(GlobalVar.to.merchantidx.value)
             .collection('menu')
             .snapshots();
       } else {
-        print('$tag getMenu categoryid ada');
+        //     print('$tag getMenu categoryid ada');
         return firebaseFirestore
             .collection("menus")
             .doc(GlobalVar.to.merchantidx.value)
@@ -53,7 +53,7 @@ class MainDb {
             .snapshots();
       }
     } else {
-      print('$tag getMenu merchantidx kosong');
+      //    print('$tag getMenu merchantidx kosong');
       return null;
     }
   }
@@ -72,7 +72,7 @@ class MainDb {
               value.data()!['merchantAddress'];
           GlobalVar.to.merchantfcmtokenx.value = value.data()!['fcmToken'];
 
-          print('checkUidMerchant ada ${GlobalVar.to.merchantidx.value}');
+          //   print('checkUidMerchant ada ${GlobalVar.to.merchantidx.value}');
 
           return Row(children: [
             ClipRRect(
@@ -118,7 +118,7 @@ class MainDb {
             ))
           ]);
         } else {
-          print('checkUid else');
+          //    print('checkUid else');
 
           return Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -441,9 +441,9 @@ class MainDb {
   }
 
   static getMerchantData() {
-    print('$tag getMerchantData ${GlobalVar.to.merchantidx.value}');
+    // print('$tag getMerchantData ${GlobalVar.to.merchantidx.value}');
     if (GlobalVar.to.merchantidx.value != '') {
-      print('$tag getMerchantData if');
+      //   print('$tag getMerchantData if');
 
       firebaseFirestore
           .collection('merchants')
@@ -456,12 +456,12 @@ class MainDb {
         GlobalVar.to.merchantimageurlx.value =
             value.data()!['merchantImageurl'];
 
-        print('$tag getMerchantData ${GlobalVar.to.merchantfcmtokenx.value}');
-        print('$tag getMerchantData ${GlobalVar.to.merchantidx.value}');
-        print('$tag getMerchantData ${GlobalVar.to.merchantnamex.value}');
-        print('$tag getMerchantData ${GlobalVar.to.merchantaddressx.value}');
-        print(
-            '$tag getMerchantData merchantimageurlx ${GlobalVar.to.merchantimageurlx.value}');
+        //    print('$tag getMerchantData ${GlobalVar.to.merchantfcmtokenx.value}');
+        //     print('$tag getMerchantData ${GlobalVar.to.merchantidx.value}');
+        //     print('$tag getMerchantData ${GlobalVar.to.merchantnamex.value}');
+        //      print('$tag getMerchantData ${GlobalVar.to.merchantaddressx.value}');
+        //      print(
+        //           '$tag getMerchantData merchantimageurlx ${GlobalVar.to.merchantimageurlx.value}');
         //  GlobalVar.to.categorylistx.clear();
         //MainDb.getCategories(value.id);
       });

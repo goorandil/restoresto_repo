@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:restoresto_repo/views/myaccount_page.dart';
@@ -18,6 +19,7 @@ import '../controllers/shopping_cart_controller.dart';
 import '../database/main_db.dart';
 import '../helper/base_app_bar.dart';
 import '../helper/global_var.dart';
+import '../main.dart';
 import 'myorder_page.dart';
 
 class MainPage extends StatelessWidget {
@@ -54,6 +56,70 @@ class MainPage extends StatelessWidget {
         false;
   }
 
+/*
+  @override
+  Widget build(BuildContext context) {
+    MainDb.getMerchantData();
+    return WillPopScope(
+        onWillPop: _onWillPop,
+        child: GetBuilder<MainController>(
+            builder: (controller) => Scaffold(
+                  appBar: AppBar(
+                    title: const Text('Plugin example app'),
+                  ),
+                  body: SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: Center(
+                        child: Column(
+                          children: <Widget>[
+                            TextButton(
+                                onPressed: () async {
+                                  print('onPressed showNotification');
+                                  const AndroidNotificationDetails
+                                      androidNotificationDetails =
+                                      AndroidNotificationDetails(
+                                          'your channel id',
+                                          'your channel name',
+                                          channelDescription:
+                                              'your channel description',
+                                          importance: Importance.max,
+                                          priority: Priority.high,
+                                          ticker: 'ticker');
+                                  const NotificationDetails
+                                      notificationDetails = NotificationDetails(
+                                          android: androidNotificationDetails);
+
+                                  controller.flutterLocalNotificationsPlugin
+                                      .show(id++, 'plaindd title', 'plain body',
+                                          notificationDetails,
+                                          payload: 'item x');
+                                },
+                                child: Text(
+                                    'Show plain notification with payload'))
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                )));
+  }
+
+  Future<void> _showNotification() async {
+    const AndroidNotificationDetails androidNotificationDetails =
+        AndroidNotificationDetails('your channel id', 'your channel name',
+            channelDescription: 'your channel description',
+            importance: Importance.max,
+            priority: Priority.high,
+            ticker: 'ticker');
+    const NotificationDetails notificationDetails =
+        NotificationDetails(android: androidNotificationDetails);
+    await flutterLocalNotificationsPlugin.show(
+        id++, 'plaindd title', 'plain body', notificationDetails,
+        payload: 'item x');
+  }
+
+*/
   @override
   Widget build(BuildContext context) {
     MainDb.getMerchantData();
@@ -64,7 +130,7 @@ class MainPage extends StatelessWidget {
                 backgroundColor: GlobalVar.to.primaryBg,
                 appBar: BaseAppBar(
                   title: Text(
-                    'main_page_title'.tr,
+                    'Restonomous'.tr,
                   ),
                   appBar: AppBar(),
                   widgets: <Widget>[],
@@ -74,6 +140,32 @@ class MainPage extends StatelessWidget {
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
+                        /*            TextButton(
+                            onPressed: () async {
+                              print('onPressed showNotification');
+                              const AndroidNotificationDetails
+                                  androidNotificationDetails =
+                                  AndroidNotificationDetails(
+                                      'your channel id', 'your channel name',
+                                      channelDescription:
+                                          'your channel description',
+                                      importance: Importance.max,
+                                      priority: Priority.high,
+                                      ticker: 'ticker');
+                              const NotificationDetails notificationDetails =
+                                  NotificationDetails(
+                                      android: androidNotificationDetails);
+
+                              controller.flutterLocalNotificationsPlugin.show(
+                                  id++,
+                                  'plaindd title',
+                                  'plain body',
+                                  notificationDetails,
+                                  payload: 'item x');
+                            },
+                            child:
+                                Text('Show plain notification with payload')),
+*/
                         /*  Expanded(
                               child: FutureBuilder<String>(
                                 future: MainDb.getUserMerchant(), // async work

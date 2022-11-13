@@ -1,35 +1,34 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
-import 'package:device_info_plus/device_info_plus.dart';
+import 'package:camera/camera.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:http/http.dart' as http;
-import 'package:image/image.dart' as image;
-import 'package:path_provider/path_provider.dart';
-import 'package:timezone/data/latest_all.dart' as tz;
-import 'package:timezone/timezone.dart' as tz;
+import 'package:restoresto_repo/database/main_db.dart';
+import 'package:restoresto_repo/routes/app_routes.dart';
+import 'package:restoresto_repo/views/login_page.dart';
+import 'package:restoresto_repo/views/main_page.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'binding/main_binding.dart';
 import 'firebase_options.dart';
 import 'helper/firebase_auth_constants.dart';
 import 'helper/global_var.dart';
 import 'helper/languages.dart';
+import 'helper/notification_service.dart';
 import 'routes/app_pages.dart';
 import 'utils/dynamic_link_service.dart';
-import 'views/login_page.dart';
-import 'views/main_page.dart';
+
+import 'package:timezone/data/latest_all.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 
 final Future<FirebaseApp> _initialization = Firebase.initializeApp(
   options: DefaultFirebaseOptions.currentPlatform,
@@ -37,12 +36,10 @@ final Future<FirebaseApp> _initialization = Firebase.initializeApp(
 late Widget firstWidget;
 String tag = 'main.dart ';
 
-@pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // If you're going to use other Firebase services in the background, such as Firestore,
   // make sure you call `initializeApp` before using other Firebase services.
   await Firebase.initializeApp();
-
   print("Handling a background message: ${message.messageId}");
 }
 
@@ -61,6 +58,11 @@ final StreamController<ReceivedNotification> didReceiveLocalNotificationStream =
 final StreamController<String?> selectNotificationStream =
     StreamController<String?>.broadcast();
 
+const MethodChannel platform =
+    MethodChannel('dexterx.dev/flutter_local_notifications_example');
+
+const String portName = 'notification_send_port';
+
 class ReceivedNotification {
   ReceivedNotification({
     required this.id,
@@ -77,16 +79,21 @@ class ReceivedNotification {
 
 String? selectedNotificationPayload;
 
+/// A notification action which triggers a url launch event
+const String urlLaunchActionId = 'id_1';
+
+/// A notification action which triggers a App navigation event
 const String navigationActionId = 'id_3';
+
+/// Defines a iOS/MacOS notification category for text input actions.
+const String darwinNotificationCategoryText = 'textCategory';
+
+/// Defines a iOS/MacOS notification category for plain actions.
+const String darwinNotificationCategoryPlain = 'plainCategory';
 
 @pragma('vm:entry-point')
 void notificationTapBackground(NotificationResponse notificationResponse) {
   // ignore: avoid_print
-  print('notificationTapBackground');
-  print('notificationTapBackground');
-  print('notificationTapBackground');
-  print('notificationTapBackground');
-  print('notificationTapBackground');
   print('notification(${notificationResponse.id}) action tapped: '
       '${notificationResponse.actionId} with'
       ' payload: ${notificationResponse.payload}');
@@ -97,13 +104,11 @@ void notificationTapBackground(NotificationResponse notificationResponse) {
   }
 }
 
-RxBool notificationsEnabled = false.obs;
 ////////////////////// end local notif
 /////////////////////
-Future<void> main() async {
-  // needed if you intend to initialize in the `main` function
-  WidgetsFlutterBinding.ensureInitialized();
 
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     name: 'restoresto_repo',
     options: DefaultFirebaseOptions.currentPlatform,
@@ -112,34 +117,140 @@ Future<void> main() async {
   await GetStorage.init();
   DynamicLinkService.initDynamicLinks();
 
+/*
+  firebaseAuth.authStateChanges().listen((User? user) async {
+    if (user == null) {
+      //  await firebaseAuth.signInAnonymously();
+// for new user or new inatall after unisntall
+// signin anonimus
+      try {
+        final userCredential = await FirebaseAuth.instance.signInAnonymously();
+        user = userCredential.user;
+        // cek user
+        MainDb.checkUser(user!.uid);
+
+        print("Signed in with temporary account.");
+      } on FirebaseAuthException catch (e) {
+        switch (e.code) {
+          case "operation-not-allowed":
+            print("Anonymous auth hasn't been enabled for this project.");
+            break;
+          default:
+            print("Unknown error.");
+        }
+      }
+    } else {
+      print('User is signed in!');
+      print(user.uid);
+      print('User is signed ${user.uid}');
+      print('User is signed ${user.email}');
+      // kalau user udah ada, lansung cek resto
+  
+    }
+  });
+*/
   if (firebaseAuth.currentUser != null) {
     firstWidget = MainPage();
   } else {
     firstWidget = LoginPage();
   }
   Get.put(GlobalVar());
-  // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
 ////////////////////// start local notif
 /////////////////////
+
+  await _configureLocalTimeZone();
+
   final NotificationAppLaunchDetails? notificationAppLaunchDetails = !kIsWeb &&
           Platform.isLinux
       ? null
       : await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
-  String initialRoute = HomePage.routeName;
+  String initialRoute = AppRoutes.main;
   if (notificationAppLaunchDetails?.didNotificationLaunchApp ?? false) {
     selectedNotificationPayload =
         notificationAppLaunchDetails!.notificationResponse?.payload;
+    initialRoute = AppRoutes.myaccount;
   }
 
   const AndroidInitializationSettings initializationSettingsAndroid =
       AndroidInitializationSettings('ic_stat_transparan');
+  final List<DarwinNotificationCategory> darwinNotificationCategories =
+      <DarwinNotificationCategory>[
+    DarwinNotificationCategory(
+      darwinNotificationCategoryText,
+      actions: <DarwinNotificationAction>[
+        DarwinNotificationAction.text(
+          'text_1',
+          'Action 1',
+          buttonTitle: 'Send',
+          placeholder: 'Placeholder',
+        ),
+      ],
+    ),
+    DarwinNotificationCategory(
+      darwinNotificationCategoryPlain,
+      actions: <DarwinNotificationAction>[
+        DarwinNotificationAction.plain('id_1', 'Action 1'),
+        DarwinNotificationAction.plain(
+          'id_2',
+          'Action 2 (destructive)',
+          options: <DarwinNotificationActionOption>{
+            DarwinNotificationActionOption.destructive,
+          },
+        ),
+        DarwinNotificationAction.plain(
+          navigationActionId,
+          'Action 3 (foreground)',
+          options: <DarwinNotificationActionOption>{
+            DarwinNotificationActionOption.foreground,
+          },
+        ),
+        DarwinNotificationAction.plain(
+          'id_4',
+          'Action 4 (auth required)',
+          options: <DarwinNotificationActionOption>{
+            DarwinNotificationActionOption.authenticationRequired,
+          },
+        ),
+      ],
+      options: <DarwinNotificationCategoryOption>{
+        DarwinNotificationCategoryOption.hiddenPreviewShowTitle,
+      },
+    )
+  ];
 
   /// Note: permissions aren't requested here just to demonstrate that can be
   /// done later
+  final DarwinInitializationSettings initializationSettingsDarwin =
+      DarwinInitializationSettings(
+    requestAlertPermission: false,
+    requestBadgePermission: false,
+    requestSoundPermission: false,
+    onDidReceiveLocalNotification:
+        (int id, String? title, String? body, String? payload) async {
+      didReceiveLocalNotificationStream.add(
+        ReceivedNotification(
+          id: id,
+          title: title,
+          body: body,
+          payload: payload,
+        ),
+      );
+    },
+    notificationCategories: darwinNotificationCategories,
+  );
+  final LinuxInitializationSettings initializationSettingsLinux =
+      LinuxInitializationSettings(
+    defaultActionName: 'Open notification',
+    defaultIcon: AssetsLinuxIcon('drawable/ic_stat_transparan.png'),
+  );
   final InitializationSettings initializationSettings = InitializationSettings(
     android: initializationSettingsAndroid,
+    iOS: initializationSettingsDarwin,
+    macOS: initializationSettingsDarwin,
+    linux: initializationSettingsLinux,
   );
+
   await flutterLocalNotificationsPlugin.initialize(
     initializationSettings,
     onDidReceiveNotificationResponse:
@@ -157,86 +268,22 @@ Future<void> main() async {
     },
     onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
   );
-  _isAndroidPermissionGranted();
-  _requestPermissions();
-  _configureDidReceiveLocalNotificationSubject();
-  _configureSelectNotificationSubject();
 
-  ////////////////////// end local notif
+////////////////////// end local notif
 /////////////////////
+
   runApp(const MyApp());
 }
 
-Future<void> _isAndroidPermissionGranted() async {
-  if (Platform.isAndroid) {
-    final bool granted = await flutterLocalNotificationsPlugin
-            .resolvePlatformSpecificImplementation<
-                AndroidFlutterLocalNotificationsPlugin>()
-            ?.areNotificationsEnabled() ??
-        false;
-
-    notificationsEnabled.value = granted;
-  }
-}
-
-Future<void> _requestPermissions() async {
-  if (Platform.isIOS || Platform.isMacOS) {
-    await flutterLocalNotificationsPlugin
-        .resolvePlatformSpecificImplementation<
-            IOSFlutterLocalNotificationsPlugin>()
-        ?.requestPermissions(
-          alert: true,
-          badge: true,
-          sound: true,
-          critical: true,
-        );
-    await flutterLocalNotificationsPlugin
-        .resolvePlatformSpecificImplementation<
-            MacOSFlutterLocalNotificationsPlugin>()
-        ?.requestPermissions(
-          alert: true,
-          badge: true,
-          sound: true,
-          critical: true,
-        );
-  } else if (Platform.isAndroid) {
-    final AndroidFlutterLocalNotificationsPlugin? androidImplementation =
-        flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>();
-
-    final bool? granted = await androidImplementation?.requestPermission();
-
-    notificationsEnabled.value = granted ?? false;
-  }
-}
-
-void _configureDidReceiveLocalNotificationSubject() {
-  didReceiveLocalNotificationStream.stream
-      .listen((ReceivedNotification receivedNotification) async {
-    await showDialog(
-      context: Get.context!,
-      builder: (BuildContext context) => CupertinoAlertDialog(
-        title: receivedNotification.title != null
-            ? Text(receivedNotification.title!)
-            : null,
-        content: receivedNotification.body != null
-            ? Text(receivedNotification.body!)
-            : null,
-        actions: <Widget>[
-          CupertinoDialogAction(
-            isDefaultAction: true,
-            onPressed: () async {},
-            child: const Text('Ok'),
-          )
-        ],
-      ),
-    );
-  });
-}
-
-void _configureSelectNotificationSubject() {
-  selectNotificationStream.stream.listen((String? payload) async {});
-}
+const simpleTaskKey = "be.tramckrijte.workmanagerExample.simpleTask";
+const rescheduledTaskKey = "be.tramckrijte.workmanagerExample.rescheduledTask";
+const failedTaskKey = "be.tramckrijte.workmanagerExample.failedTask";
+const simpleDelayedTask = "be.tramckrijte.workmanagerExample.simpleDelayedTask";
+const simplePeriodicTask =
+    "be.tramckrijte.workmanagerExample.simplePeriodicTask";
+const simplePeriodic1HourTask =
+    "be.tramckrijte.workmanagerExample.simplePeriodic1HourTask";
+const newCustomerOrfer = "newCustomerOrder";
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -256,7 +303,7 @@ class MyApp extends StatelessWidget {
           //    return MyAwesomeApp();
 
           return GetMaterialApp(
-            title: 'Restonomous',
+            title: 'Resto Resto',
             debugShowCheckedModeBanner: false,
             translations: Languages(),
             locale: Get.deviceLocale,
@@ -287,75 +334,31 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class HomePage extends StatefulWidget {
-  const HomePage(
-    this.notificationAppLaunchDetails, {
+Future<void> _configureLocalTimeZone() async {
+  if (kIsWeb || Platform.isLinux) {
+    return;
+  }
+  tz.initializeTimeZones();
+  final String? timeZoneName = await FlutterNativeTimezone.getLocalTimezone();
+  tz.setLocalLocation(tz.getLocation(timeZoneName!));
+}
+
+class PaddedElevatedButton extends StatelessWidget {
+  const PaddedElevatedButton({
+    required this.buttonText,
+    required this.onPressed,
     Key? key,
   }) : super(key: key);
 
-  static const String routeName = '/';
-
-  final NotificationAppLaunchDetails? notificationAppLaunchDetails;
-
-  bool get didNotificationLaunchApp =>
-      notificationAppLaunchDetails?.didNotificationLaunchApp ?? false;
+  final String buttonText;
+  final VoidCallback onPressed;
 
   @override
-  _HomePageState createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  final TextEditingController _linuxIconPathController =
-      TextEditingController();
-
-  bool _notificationsEnabled = false;
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    didReceiveLocalNotificationStream.close();
-    selectNotificationStream.close();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(
-          title: const Text('Plugin example app'),
-        ),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(8),
-            child: Center(
-              child: Column(
-                children: <Widget>[
-                  TextButton(
-                      onPressed: () async {
-                        await _showNotification();
-                      },
-                      child: Text('Show plain notification with payload'))
-                ],
-              ),
-            ),
-          ),
+  Widget build(BuildContext context) => Padding(
+        padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
+        child: ElevatedButton(
+          onPressed: onPressed,
+          child: Text(buttonText),
         ),
       );
-
-  Future<void> _showNotification() async {
-    const AndroidNotificationDetails androidNotificationDetails =
-        AndroidNotificationDetails('your channel id', 'your channel name',
-            channelDescription: 'your channel description',
-            importance: Importance.max,
-            priority: Priority.high,
-            ticker: 'ticker');
-    const NotificationDetails notificationDetails =
-        NotificationDetails(android: androidNotificationDetails);
-    await flutterLocalNotificationsPlugin.show(
-        id++, 'plaindd title', 'plain body', notificationDetails,
-        payload: 'item x');
-  }
 }

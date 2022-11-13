@@ -68,6 +68,8 @@ class CheckoutDb {
       'merchantID': GlobalVar.to.merchantidx.value,
       'userFcmtoken': GlobalVar.to.userfcmtokenx.value,
       'merchantFcmtoken': GlobalVar.to.merchantfcmtokenx.value,
+      'merchantName': GlobalVar.to.merchantnamex.value,
+      'merchantAddress': GlobalVar.to.merchantaddressx.value,
       'orderStatus': 'request',
       'createdAt': datex,
       'updatedAt': datex,

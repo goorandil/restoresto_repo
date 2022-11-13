@@ -1,9 +1,14 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intl/date_symbol_data_custom.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -18,9 +23,9 @@ import 'package:get_storage/get_storage.dart';
 import 'package:new_version/new_version.dart';
 import 'package:restoresto_repo/helper/firebase_auth_constants.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 import '../database/main_db.dart';
 import '../helper/global_var.dart';
+import '../main.dart';
 import '../utils/dynamic_link_service.dart';
 import '../views/resto_page.dart';
 
@@ -32,6 +37,7 @@ class MainController extends GetxController {
   RxString deeplink = ''.obs;
   RxString merchantidx = 'null'.obs;
   RxString ordertotal = '0'.obs;
+  RxBool _notificationsEnabled = false.obs;
 
   RxInt qty = 1.obs;
   RxInt numshopcart = 0.obs;
@@ -53,17 +59,24 @@ class MainController extends GetxController {
     update();
   }
 
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-      FlutterLocalNotificationsPlugin();
-
   final saldo = NumberFormat.currency(
       locale: 'id_ID', customPattern: '#,###', symbol: 'Rp.', decimalDigits: 0);
   final newVersion = NewVersion(
     iOSId: 'com.bingkaiapp.restoresto',
     androidId: 'com.bingkaiapp.restoresto',
   );
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+  ////////////////
   FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
-
+  late DateFormat dateFormat;
+/*
+  void setupWorkManager() async {
+    debugPrint('setupWorkManager');
+    Workmanager().registerOneOffTask("task-identifier", "control",
+        initialDelay: Duration(seconds: 10));
+  }
+*/
   @override
   Future<void> onInit() async {
     final fcmToken = await FirebaseMessaging.instance.getToken();
@@ -74,31 +87,36 @@ class MainController extends GetxController {
       RemoteNotification? notification = message.notification;
       AndroidNotification? android = message.notification?.android;
 
-      debugPrint('FirebaseMessaging $notification');
-      debugPrint('FirebaseMessaging $android');
+      debugPrint(message.notification!.title.toString());
+      debugPrint(message.notification!.body.toString());
+      debugPrint('FirebaseMessaging onMessage $notification.body');
+      debugPrint('FirebaseMessaging onMessage $android');
       debugPrint(
           'FirebaseMessaging ${message.data}'); // If `onMessage` is triggered with a notification, construct our own
+      const AndroidNotificationDetails androidNotificationDetails =
+          AndroidNotificationDetails('your channel id', 'your channel name',
+              channelDescription: 'your channel description',
+              importance: Importance.max,
+              priority: Priority.high,
+              ticker: 'ticker');
+      const NotificationDetails notificationDetails =
+          NotificationDetails(android: androidNotificationDetails);
 
-      update();
+      flutterLocalNotificationsPlugin.show(
+          id++,
+          message.notification!.title.toString(),
+          message.notification!.body.toString(),
+          notificationDetails,
+          payload: 'item x');
 
+      //  update();
+      // setupWorkManager();
       // local notification to show to users using the created channel.
       if (notification != null && android != null) {
         debugPrint('FirebaseMessaging flutterLocalNotificationsPlugin');
-        flutterLocalNotificationsPlugin.show(
-            notification.hashCode,
-            notification.title,
-            notification.body,
-            NotificationDetails(
-              android: AndroidNotificationDetails(
-                'channel.id',
-                'channel.name',
-                //  'channel.description',
-                icon: android.smallIcon,
-                // other properties...
-              ),
-            ));
       }
     });
+
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       print('A new onMessageOpenedApp event was published!');
       //   Navigator.pushNamed(context, '/message',
@@ -107,6 +125,8 @@ class MainController extends GetxController {
 
     //final pushNotificationService = PushNotificationService(firebaseMessaging);
     //pushNotificationService.initialise();
+    //  await _configureLocalTimeZone();
+//    await _initializeNotification();
 
     super.onInit();
 
@@ -132,10 +152,113 @@ class MainController extends GetxController {
     // MainDb.migrateMenu();
     // MainDb.migrateResto();
 
-    await _initializeNotification();
-    super.onInit();
+    // print('User granted permission: ${settings.authorizationStatus}');
 
-    print('User granted permission: ${settings.authorizationStatus}');
+//    _isAndroidPermissionGranted();
+    //  _requestPermissions();
+    //  _configureDidReceiveLocalNotificationSubject();
+    //  _configureSelectNotificationSubject();
+  }
+
+  Future<void> _isAndroidPermissionGranted() async {
+    if (Platform.isAndroid) {
+      final bool granted = await flutterLocalNotificationsPlugin
+              .resolvePlatformSpecificImplementation<
+                  AndroidFlutterLocalNotificationsPlugin>()
+              ?.areNotificationsEnabled() ??
+          false;
+
+      _notificationsEnabled.value = granted;
+    }
+  }
+
+  Future<void> _requestPermissions() async {
+    if (Platform.isIOS || Platform.isMacOS) {
+      await flutterLocalNotificationsPlugin
+          .resolvePlatformSpecificImplementation<
+              IOSFlutterLocalNotificationsPlugin>()
+          ?.requestPermissions(
+            alert: true,
+            badge: true,
+            sound: true,
+            critical: true,
+          );
+      await flutterLocalNotificationsPlugin
+          .resolvePlatformSpecificImplementation<
+              MacOSFlutterLocalNotificationsPlugin>()
+          ?.requestPermissions(
+            alert: true,
+            badge: true,
+            sound: true,
+            critical: true,
+          );
+    } else if (Platform.isAndroid) {
+      final AndroidFlutterLocalNotificationsPlugin? androidImplementation =
+          flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin>();
+
+      final bool? granted = await androidImplementation?.requestPermission();
+      _notificationsEnabled.value = granted ?? false;
+    }
+  }
+
+  void _configureDidReceiveLocalNotificationSubject() {
+    didReceiveLocalNotificationStream.stream
+        .listen((ReceivedNotification receivedNotification) async {
+      /*   await showDialog(
+        context: context,
+        builder: (BuildContext context) => CupertinoAlertDialog(
+          title: receivedNotification.title != null
+              ? Text(receivedNotification.title!)
+              : null,
+          content: receivedNotification.body != null
+              ? Text(receivedNotification.body!)
+              : null,
+          actions: <Widget>[
+            CupertinoDialogAction(
+              isDefaultAction: true,
+              onPressed: () async {
+                Navigator.of(context, rootNavigator: true).pop();
+                await Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (BuildContext context) =>
+                        SecondPage(receivedNotification.payload),
+                  ),
+                );
+              },
+              child: const Text('Ok'),
+            )
+          ],
+        ),
+      );
+ */
+    });
+  }
+
+  void _configureSelectNotificationSubject() {
+    selectNotificationStream.stream.listen((String? payload) async {
+      // await Navigator.of(context).push(MaterialPageRoute<void>(
+      //    builder: (BuildContext context) => SecondPage(payload),
+      //  ));
+    });
+  }
+
+  Future<void> showNotification(notificationDetails) =>
+      flutterLocalNotificationsPlugin.show(
+          id++, 'plaindd title', 'plain body', notificationDetails,
+          payload: 'item x');
+
+  @override
+  void dispose() {
+    didReceiveLocalNotificationStream.close();
+    selectNotificationStream.close();
+    super.dispose();
+  }
+
+  Future<void> _configureLocalTimeZone() async {
+    tz.initializeTimeZones();
+    final String timeZoneName = await FlutterNativeTimezone.getLocalTimezone();
+    tz.setLocalLocation(tz.getLocation(timeZoneName));
   }
 
   Future<void> _initializeNotification() async {
@@ -146,7 +269,7 @@ class MainController extends GetxController {
       requestSoundPermission: false,
     );
     const AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings('ic_notification');
+        AndroidInitializationSettings('@mipmap/ic_launcher');
 
     const InitializationSettings initializationSettings =
         InitializationSettings(
@@ -158,17 +281,6 @@ class MainController extends GetxController {
 
   Future<void> cancelNotification() async {
     await flutterLocalNotificationsPlugin.cancelAll();
-  }
-
-  Future<void> requestPermissions() async {
-    await flutterLocalNotificationsPlugin
-        .resolvePlatformSpecificImplementation<
-            IOSFlutterLocalNotificationsPlugin>()
-        ?.requestPermissions(
-          alert: true,
-          badge: true,
-          sound: true,
-        );
   }
 
   Future<void> registerMessage({
@@ -199,7 +311,7 @@ class MainController extends GetxController {
           priority: Priority.high,
           ongoing: true,
           styleInformation: BigTextStyleInformation(message),
-          icon: 'ic_notification',
+          icon: '@mipmap/ic_launcher',
         ),
         iOS: const DarwinNotificationDetails(
           badgeNumber: 1,
@@ -336,11 +448,6 @@ class MainController extends GetxController {
         }
       });
 
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
   Widget getMenuList(AsyncSnapshot<QuerySnapshot<Object?>?> snapshot) {
     if (snapshot.hasData) {
       //   print('getMenuList ${snapshot.data!.docs.length}');
@@ -362,7 +469,7 @@ class MainController extends GetxController {
   getNumShopcart() {
     int? numtot = 0;
     numtot = shopcartList.length;
-    print('getNumShopcart length ${shopcartList.length}');
+    // print('getNumShopcart length ${shopcartList.length}');
     numshopcart.value = numtot;
     update();
   }
