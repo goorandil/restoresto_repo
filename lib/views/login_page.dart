@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 
 import '../controllers/login_controller.dart';
 import '../helper/global_var.dart';
+import '../helper/sign_in.dart';
 
 class LoginPage extends StatelessWidget {
   LoginPage({Key? key}) : super(key: key);
@@ -48,7 +49,8 @@ class LoginPage extends StatelessWidget {
                               fontSize: 15, fontWeight: FontWeight.bold)),
                       onPressed: () {
                         print('$tag login');
-                        controller.loginWithGoogle();
+                        // controller.loginWithGoogle();
+                        signInWithGoogle();
                       },
                       child: Text("Login with Google".tr),
                     ),

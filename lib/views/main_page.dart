@@ -1,25 +1,14 @@
-import 'dart:ui';
-
 import 'package:badges/badges.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
-import 'package:package_info_plus/package_info_plus.dart';
-import 'package:restoresto_repo/views/myaccount_page.dart';
-import 'package:restoresto_repo/views/resto_page.dart';
-import 'package:restoresto_repo/views/shopping_cart_page.dart';
-import 'package:share_plus/share_plus.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../controllers/main_controller.dart';
-import '../controllers/shopping_cart_controller.dart';
 import '../database/main_db.dart';
 import '../helper/base_app_bar.dart';
 import '../helper/global_var.dart';
-import '../main.dart';
+import '../helper/sign_in.dart';
 import 'myorder_page.dart';
 
 class MainPage extends StatelessWidget {
@@ -36,24 +25,35 @@ class MainPage extends StatelessWidget {
       debugPrint('FirebaseMessaging $android');
       debugPrint('FirebaseMessaging ${message.data}');
     });
-    return (await showDialog(
-          context: Get.context!,
-          builder: (context) => new AlertDialog(
-            title: Text('Are you sure?'.tr),
-            content: new Text('Do you want to exit an App'.tr),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(false),
-                child: new Text('No'.tr),
-              ),
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(true),
-                child: new Text('Yes'.tr),
-              ),
-            ],
+    Get.defaultDialog(
+      titlePadding: const EdgeInsets.all(15),
+      contentPadding: const EdgeInsets.all(15),
+      title: 'Do you want to exit this application?'.tr,
+      content: Text('We sad to see you leave...'.tr),
+      //  backgroundColor: Colors.teal,
+      radius: 30,
+      actions: <Widget>[
+        TextButton(
+          child: Text(
+            'Cancel',
+            style: TextStyle(color: GlobalVar.to.primaryText),
           ),
-        )) ??
-        false;
+          onPressed: () {
+            Get.back();
+          },
+        ),
+        TextButton(
+          child: Text(
+            'Exit',
+            style: TextStyle(color: GlobalVar.to.primaryText),
+          ),
+          onPressed: () async {
+            signOutGoogle();
+          },
+        ),
+      ],
+    );
+    return true;
   }
 
 /*
@@ -758,7 +758,7 @@ class MainPage extends StatelessWidget {
                                             ],
                                           ),
                                           onTap: () {
-                                            Get.toNamed('/myaccount');
+                                            Get.toNamed('myaccount');
                                           },
                                         )),
                                   ),

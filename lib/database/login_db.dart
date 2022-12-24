@@ -1,8 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
-import 'package:intl/intl.dart';
 import 'package:restoresto_repo/views/main_page.dart';
 
 import '../helper/firebase_auth_constants.dart';
@@ -54,12 +50,12 @@ class LoginDb {
         'updatedAt': DateTime.now(),
         'iupdatedAt': DateTime.now().millisecondsSinceEpoch,
         'isDone': false,
-        'app': 'resto resto',
+        'app': 'restonomous',
         'userAddress': '',
         'userPhone': '',
         'userBalance': '',
       });
-    }).whenComplete(() => Get.to(() => MainPage()));
+    }).whenComplete(() => Get.toNamed('main'));
   }
 
   static Future<void> addNewWaiter() async {

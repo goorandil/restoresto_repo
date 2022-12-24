@@ -1,25 +1,16 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:http/http.dart' as http;
-import 'package:image/image.dart' as image;
-import 'package:path_provider/path_provider.dart';
-import 'package:timezone/data/latest_all.dart' as tz;
-import 'package:timezone/timezone.dart' as tz;
+import 'package:workmanager/workmanager.dart';
 
 import 'binding/main_binding.dart';
 import 'firebase_options.dart';
@@ -32,26 +23,52 @@ import 'views/login_page.dart';
 import 'views/main_page.dart';
 
 final Future<FirebaseApp> _initialization = Firebase.initializeApp(
+  name: "restonomous",
   options: DefaultFirebaseOptions.currentPlatform,
 );
 late Widget firstWidget;
 String tag = 'main.dart ';
 
-@pragma('vm:entry-point')
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  // If you're going to use other Firebase services in the background, such as Firestore,
-  // make sure you call `initializeApp` before using other Firebase services.
-  await Firebase.initializeApp();
+/// Initialize the [FlutterLocalNotificationsPlugin] package.
+//late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
 
-  print("Handling a background message: ${message.messageId}");
+Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  print("Handling a background message");
+  RemoteNotification? notification = message.notification;
+  AndroidNotification? android = message.notification?.android;
+
+  debugPrint('firebaseMessagingBackgroundHandler ${notification!.title}');
+  debugPrint('firebaseMessagingBackgroundHandler ${notification.body}');
+
+  const AndroidNotificationDetails androidNotificationDetails =
+      AndroidNotificationDetails('soundid1', 'soundname1',
+          channelDescription:
+              'This channel is used for important notifications.',
+          importance: Importance.max,
+          sound: RawResourceAndroidNotificationSound('mysound'),
+          priority: Priority.high,
+          ticker: 'ticker');
+  const NotificationDetails notificationDetails =
+      NotificationDetails(android: androidNotificationDetails);
+
+  /// ini yg lokal notif
+  flutterLocalNotificationsPlugin.show(
+      id++,
+      message.notification!.title.toString(),
+      message.notification!.body.toString(),
+      notificationDetails,
+      payload: 'item x');
+
+  if (notification != null && android != null) {
+    debugPrint('FirebaseMessaging flutterLocalNotificationsPlugin');
+  }
 }
 
 ////////////////////// start local notif
 /////////////////////
 int id = 0;
-
-final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-    FlutterLocalNotificationsPlugin();
 
 /// Streams are created so that app can respond to notification-related events
 /// since the plugin is initialised in the `main` function
@@ -77,16 +94,23 @@ class ReceivedNotification {
 
 String? selectedNotificationPayload;
 
+/// A notification action which triggers a url launch event
+const String urlLaunchActionId = 'id_1';
+
 const String navigationActionId = 'id_3';
 
+/// Defines a iOS/MacOS notification category for text input actions.
+const String darwinNotificationCategoryText = 'textCategory';
+
+/// Defines a iOS/MacOS notification category for plain actions.
+const String darwinNotificationCategoryPlain = 'plainCategory';
+
+RxBool notificationsEnabled = false.obs;
+////////////////////// end local notif
+/////////////////////
 @pragma('vm:entry-point')
 void notificationTapBackground(NotificationResponse notificationResponse) {
   // ignore: avoid_print
-  print('notificationTapBackground');
-  print('notificationTapBackground');
-  print('notificationTapBackground');
-  print('notificationTapBackground');
-  print('notificationTapBackground');
   print('notification(${notificationResponse.id}) action tapped: '
       '${notificationResponse.actionId} with'
       ' payload: ${notificationResponse.payload}');
@@ -97,7 +121,6 @@ void notificationTapBackground(NotificationResponse notificationResponse) {
   }
 }
 
-RxBool notificationsEnabled = false.obs;
 ////////////////////// end local notif
 /////////////////////
 Future<void> main() async {
@@ -105,11 +128,13 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp(
-    name: 'restoresto_repo',
+    name: 'restonomous',
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
   await GetStorage.init();
+  Get.put(GlobalVar());
+
   DynamicLinkService.initDynamicLinks();
 
   if (firebaseAuth.currentUser != null) {
@@ -117,7 +142,7 @@ Future<void> main() async {
   } else {
     firstWidget = LoginPage();
   }
-  Get.put(GlobalVar());
+
   // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
 ////////////////////// start local notif
@@ -126,7 +151,7 @@ Future<void> main() async {
           Platform.isLinux
       ? null
       : await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
-  String initialRoute = HomePage.routeName;
+
   if (notificationAppLaunchDetails?.didNotificationLaunchApp ?? false) {
     selectedNotificationPayload =
         notificationAppLaunchDetails!.notificationResponse?.payload;
@@ -167,6 +192,8 @@ Future<void> main() async {
   runApp(const MyApp());
 }
 
+////////////////////// start local notif
+/////////////////////
 Future<void> _isAndroidPermissionGranted() async {
   if (Platform.isAndroid) {
     final bool granted = await flutterLocalNotificationsPlugin
@@ -238,6 +265,58 @@ void _configureSelectNotificationSubject() {
   selectNotificationStream.stream.listen((String? payload) async {});
 }
 
+////////////////////// end local notif
+/////////////////////
+///
+///
+//
+////////////////////// start work manager
+/////////////////////
+const simpleTaskKey = "be.tramckrijte.workmanagerExample.simpleTask";
+const rescheduledTaskKey = "be.tramckrijte.workmanagerExample.rescheduledTask";
+const failedTaskKey = "be.tramckrijte.workmanagerExample.failedTask";
+const simpleDelayedTask = "be.tramckrijte.workmanagerExample.simpleDelayedTask";
+const simplePeriodicTask =
+    "be.tramckrijte.workmanagerExample.simplePeriodicTask";
+const simplePeriodic1HourTask =
+    "be.tramckrijte.workmanagerExample.simplePeriodic1HourTask";
+
+@pragma('vm:entry-point')
+// Mandatory if the App is obfuscated or using Flutter 3.1+
+void callbackDispatcher() {
+  debugPrint('callbackDispatcher');
+  Workmanager().executeTask((task, inputData) async {
+    switch (task) {
+      case simpleTaskKey:
+        print("$simpleTaskKey was executed.  ");
+        break;
+      case rescheduledTaskKey:
+        final key = inputData!['key']!;
+        break;
+      case failedTaskKey:
+        print('failed task');
+        return Future.error('failed');
+      case simpleDelayedTask:
+        print("$simpleDelayedTask was executed");
+        break;
+      case simplePeriodicTask:
+        print("$simplePeriodicTask was executed");
+        break;
+      case simplePeriodic1HourTask:
+        print("$simplePeriodic1HourTask was executed");
+        break;
+      case Workmanager.iOSBackgroundTask:
+        print("The iOS background fetch was triggered");
+        break;
+    }
+
+    return Future.value(true);
+  });
+}
+
+////////////////////// end work manager
+/////////////////////
+///
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
@@ -284,78 +363,5 @@ class MyApp extends StatelessWidget {
         }
       },
     );
-  }
-}
-
-class HomePage extends StatefulWidget {
-  const HomePage(
-    this.notificationAppLaunchDetails, {
-    Key? key,
-  }) : super(key: key);
-
-  static const String routeName = '/';
-
-  final NotificationAppLaunchDetails? notificationAppLaunchDetails;
-
-  bool get didNotificationLaunchApp =>
-      notificationAppLaunchDetails?.didNotificationLaunchApp ?? false;
-
-  @override
-  _HomePageState createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  final TextEditingController _linuxIconPathController =
-      TextEditingController();
-
-  bool _notificationsEnabled = false;
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    didReceiveLocalNotificationStream.close();
-    selectNotificationStream.close();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(
-          title: const Text('Plugin example app'),
-        ),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(8),
-            child: Center(
-              child: Column(
-                children: <Widget>[
-                  TextButton(
-                      onPressed: () async {
-                        await _showNotification();
-                      },
-                      child: Text('Show plain notification with payload'))
-                ],
-              ),
-            ),
-          ),
-        ),
-      );
-
-  Future<void> _showNotification() async {
-    const AndroidNotificationDetails androidNotificationDetails =
-        AndroidNotificationDetails('your channel id', 'your channel name',
-            channelDescription: 'your channel description',
-            importance: Importance.max,
-            priority: Priority.high,
-            ticker: 'ticker');
-    const NotificationDetails notificationDetails =
-        NotificationDetails(android: androidNotificationDetails);
-    await flutterLocalNotificationsPlugin.show(
-        id++, 'plaindd title', 'plain body', notificationDetails,
-        payload: 'item x');
   }
 }

@@ -4,11 +4,14 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:restoresto_repo/controllers/main_controller.dart';
+import 'package:restoresto_repo/helper/sign_in.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../database/main_db.dart';
 import '../database/profile_db.dart';
 import '../helper/firebase_auth_constants.dart';
 import '../helper/global_var.dart';
+
+import '../helper/sign_in.dart';
 
 class MyaccountController extends GetxController {
   RxString pageTitle = 'Akun Saya'.obs;
@@ -69,8 +72,8 @@ class MyaccountController extends GetxController {
     Get.defaultDialog(
       titlePadding: const EdgeInsets.all(15),
       contentPadding: const EdgeInsets.all(15),
-      title: 'Do you want to exit this application?',
-      content: const Text('We sad to see you leave...'),
+      title: 'Do you want to exit this application?'.tr,
+      content: Text('We sad to see you leave...'.tr),
       //  backgroundColor: Colors.teal,
       radius: 30,
       actions: <Widget>[
@@ -89,24 +92,11 @@ class MyaccountController extends GetxController {
             style: TextStyle(color: GlobalVar.to.primaryText),
           ),
           onPressed: () async {
-            Get.back();
-            logoutGoogle();
+            signOutGoogle();
           },
         ),
       ],
     );
-  }
-
-  Future<void> logoutGoogle() async {
-    print('logoutGoogle');
-    print('logoutGoogle ${FirebaseAuth.instance.signOut()}');
-
-    //  await googleSignIn.disconnect();
-    await FirebaseAuth.instance.signOut();
-    await googleSignIn.signOut();
-    SystemNavigator.pop();
-
-    // navigate to your wanted page after logout.
   }
 
   void getUserData() {

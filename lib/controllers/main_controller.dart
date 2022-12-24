@@ -65,9 +65,12 @@ class MainController extends GetxController {
     iOSId: 'com.bingkaiapp.restoresto',
     androidId: 'com.bingkaiapp.restoresto',
   );
+
+  //// start push notif
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
-  ////////////////
+  ///// end push notif
+
   FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
   late DateFormat dateFormat;
 /*
@@ -83,6 +86,7 @@ class MainController extends GetxController {
     debugPrint('fcmToken  $fcmToken');
     MainDb.updateFcmToken(fcmToken);
 
+//////start messaging
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       RemoteNotification? notification = message.notification;
       AndroidNotification? android = message.notification?.android;
@@ -127,7 +131,7 @@ class MainController extends GetxController {
     //pushNotificationService.initialise();
     //  await _configureLocalTimeZone();
 //    await _initializeNotification();
-
+//////end messaging
     super.onInit();
 
     NotificationSettings settings = await firebaseMessaging.requestPermission(
@@ -698,7 +702,7 @@ class MainController extends GetxController {
                                   alignment: Alignment.centerRight,
                                   child: Text(
                                     //  '${snapshot.data!.docs[index]['menuPrice']}',
-                                    'Rp. ${saldo.format(int.parse(snapshot.data!.docs[index]['menuPrice'].toString()))}',
+                                    '${saldo.format(int.parse(snapshot.data!.docs[index]['menuPrice'].toString()))}',
                                     style: const TextStyle(
                                         color: Colors.black,
                                         fontSize: 18,
@@ -788,6 +792,18 @@ class MainController extends GetxController {
     print('setCat categoryid $categoryid');
     categoryidx.value = categoryid;
     categorynamex.value = categoryname;
+  }
+
+  Future<void> logoutGoogle() async {
+    print('logoutGoogle');
+    print('logoutGoogle ${FirebaseAuth.instance.signOut()}');
+
+    //  await googleSignIn.disconnect();
+    await FirebaseAuth.instance.signOut();
+    await googleSignIn.signOut();
+    SystemNavigator.pop();
+
+    // navigate to your wanted page after logout.
   }
 
   void checkAuth() {
@@ -908,17 +924,5 @@ class MainController extends GetxController {
   }*/
     }
     return null;
-  }
-
-  Future<void> logoutGoogle() async {
-    print('logoutGoogle');
-    print('logoutGoogle ${FirebaseAuth.instance.signOut()}');
-
-    //  await googleSignIn.disconnect();
-    await FirebaseAuth.instance.signOut();
-    await googleSignIn.signOut();
-    SystemNavigator.pop();
-
-    // navigate to your wanted page after logout.
   }
 }
