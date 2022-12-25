@@ -303,7 +303,7 @@ class MyApp extends StatelessWidget {
           //    return MyAwesomeApp();
 
           return GetMaterialApp(
-            title: 'Resto Resto',
+            title: 'Restonomous',
             debugShowCheckedModeBanner: false,
             translations: Languages(),
             locale: Get.deviceLocale,

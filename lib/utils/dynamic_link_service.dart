@@ -167,7 +167,7 @@ class DynamicLinkService {
         campaign: "example-promo",
       ),
       socialMetaTagParameters: SocialMetaTagParameters(
-        title: "Resto Resto",
+        title: "Restonomous",
         imageUrl: Uri.parse(
             "https://www.google.com/imgres?imgurl=https%3A%2F%2Fplay-lh.googleusercontent.com%2F6-AwzHJ5Uy3GkIYHR5ro0YDmLLiRzFsjpLxIVdqcjc4nE78g4QCt9p03eXsWQkezBw%3Dw240-h480-rw&imgrefurl=https%3A%2F%2Fplay.google.com%2Fstore%2Fapps%2Fdetails%3Fid%3Dcom.bingkaiapp.present%26hl%3Dis%26gl%3DUS&tbnid=YsJlAi1rNFAf-M&vet=12ahUKEwjT1-Gm9qz4AhW3j9gFHZl7CaUQMygAegUIARCUAQ..i&docid=MkQ3RXenzq69CM&w=240&h=240&itg=1&q=contreng%20abensi%20online&ved=2ahUKEwjT1-Gm9qz4AhW3j9gFHZl7CaUQMygAegUIARCUAQ"),
       ),

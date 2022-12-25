@@ -4,12 +4,8 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 import '../helper/global_var.dart';
-import 'main_controller.dart';
 
 class MyorderhisDetailController extends GetxController {
-  static MyorderhisDetailController get to =>
-      Get.find<MyorderhisDetailController>();
-
   RxString pageTitle = 'Order Details'.tr.obs;
   final saldo = NumberFormat.currency(
       locale: 'id_ID', customPattern: '#,###', symbol: 'Rp.', decimalDigits: 0);
@@ -93,9 +89,10 @@ class MyorderhisDetailController extends GetxController {
                                     alignment: Alignment.centerLeft,
                                     child: Text(
                                       '${snapshot.data!.docs[index]['menuName']}',
-                                      style: const TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.normal),
+                                      style: TextStyle(
+                                          color: GlobalVar.to.colorText,
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold),
                                     ),
                                   ),
                                 )
@@ -109,8 +106,8 @@ class MyorderhisDetailController extends GetxController {
                                     alignment: Alignment.centerLeft,
                                     child: Text(
                                       '${snapshot.data!.docs[index]['menuDescription']}',
-                                      style: const TextStyle(
-                                          color: Colors.black,
+                                      style: TextStyle(
+                                          color: GlobalVar.to.primaryText,
                                           fontWeight: FontWeight.normal),
                                     ),
                                   ),
@@ -124,9 +121,10 @@ class MyorderhisDetailController extends GetxController {
                                   child: Align(
                                     alignment: Alignment.centerLeft,
                                     child: Text(
+                                      //  '${snapshot.data!.docs[index]['menuPrice']}',
                                       'Rp. ${saldo.format(int.parse(snapshot.data!.docs[index]['menuPrice'].toString()))}',
-                                      style: const TextStyle(
-                                          color: Colors.black,
+                                      style: TextStyle(
+                                          color: GlobalVar.to.colorText,
                                           fontWeight: FontWeight.normal),
                                     ),
                                   ),
@@ -141,13 +139,16 @@ class MyorderhisDetailController extends GetxController {
                                     alignment: Alignment.centerLeft,
                                     child: Text(
                                       '${'Qty'.tr} : ${snapshot.data!.docs[index]['qty']}',
-                                      style: const TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.normal),
+                                      style: TextStyle(
+                                          color: GlobalVar.to.primaryText,
+                                          fontWeight: FontWeight.bold),
                                     ),
                                   ),
                                 )
                               ],
+                            ),
+                            SizedBox(
+                              height: 10,
                             ),
                             Row(
                               children: [
@@ -156,10 +157,11 @@ class MyorderhisDetailController extends GetxController {
                                   child: Align(
                                     alignment: Alignment.topRight,
                                     child: Text(
+                                      //   '${snapshot.data!.docs[index]['sumtot']}',
                                       'Rp. ${saldo.format(int.parse(snapshot.data!.docs[index]['sumtot'].toString()))}',
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                           fontSize: 18,
-                                          color: Colors.red,
+                                          color: GlobalVar.to.colorText,
                                           fontWeight: FontWeight.bold),
                                     ),
                                   ),

@@ -128,7 +128,6 @@ class ProfilePage extends StatelessWidget {
                                         label: Text(
                                           'Dari Galeri',
                                           style: TextStyle(
-                                              fontSize: 18,
                                               color: GlobalVar.to.primary),
                                         ),
                                       )),
@@ -144,7 +143,6 @@ class ProfilePage extends StatelessWidget {
                                         label: Text(
                                           'Dari Kamera',
                                           style: TextStyle(
-                                              fontSize: 18,
                                               color: GlobalVar.to.primary),
                                         ),
                                       )),

@@ -501,82 +501,112 @@ class MainController extends GetxController {
 
           //    selectedState.value = snapshot.data!.docs[index]['categoryID'];
 
-          Get.defaultDialog(
-            titlePadding: const EdgeInsets.all(15),
-            contentPadding: const EdgeInsets.all(15),
-            title: 'Put it in your tray'.tr,
+          snapshot.data!.docs[index]['menuStatus']
+              ? Get.defaultDialog(
+                  titlePadding: const EdgeInsets.all(15),
+                  contentPadding: const EdgeInsets.all(15),
+                  title: 'Put it in your tray'.tr,
 
-            content: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Text(
-                  '${userBox.read('editmenuname')}',
-                  style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: GlobalVar.to.primaryText),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
+                  content: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        '${userBox.read('editmenuname')}',
+                        style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: GlobalVar.to.primaryButton),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          TextButton(
+                            child: Text(
+                              '-',
+                              style: TextStyle(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold,
+                                  color: GlobalVar.to.primaryText),
+                            ),
+                            onPressed: () async {
+                              qtyDecrease();
+                            },
+                          ),
+                          Obx(() => Text(
+                                '${qty.value}',
+                                style: TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.bold),
+                              )),
+                          TextButton(
+                            child: Text(
+                              '+',
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: GlobalVar.to.primaryText),
+                            ),
+                            onPressed: () async {
+                              qtyIncrease();
+                            },
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+
+                  //  backgroundColor: Colors.teal,
+
+                  radius: 30,
+                  actions: <Widget>[
                     TextButton(
                       child: Text(
-                        '-',
-                        style: TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
-                            color: GlobalVar.to.primaryText),
+                        'Cancel'.tr,
+                        style: TextStyle(color: GlobalVar.to.primaryText),
                       ),
                       onPressed: () async {
-                        qtyDecrease();
+                        Get.back();
                       },
                     ),
-                    Obx(() => Text(
-                          '${qty.value}',
-                          style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold),
-                        )),
                     TextButton(
                       child: Text(
-                        '+',
-                        style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: GlobalVar.to.primaryText),
+                        'Add'.tr,
+                        style: TextStyle(color: GlobalVar.to.primaryText),
                       ),
                       onPressed: () async {
-                        qtyIncrease();
+                        addToCart();
                       },
                     ),
                   ],
-                ),
-              ],
-            ),
-
-            //  backgroundColor: Colors.teal,
-
-            radius: 30,
-            actions: <Widget>[
-              TextButton(
-                child: Text(
-                  'Cancel'.tr,
-                  style: TextStyle(color: GlobalVar.to.primaryText),
-                ),
-                onPressed: () async {
-                  Get.back();
-                },
-              ),
-              TextButton(
-                child: Text(
-                  'Add'.tr,
-                  style: TextStyle(color: GlobalVar.to.primaryText),
-                ),
-                onPressed: () async {
-                  addToCart();
-                },
-              ),
-            ],
-          );
+                )
+              : Get.defaultDialog(
+                  titlePadding: const EdgeInsets.all(15),
+                  contentPadding: const EdgeInsets.all(15),
+                  title: 'Notification'.tr,
+                  content: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Out of stock'.tr,
+                        style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: GlobalVar.to.primaryButton),
+                      ),
+                    ],
+                  ),
+                  radius: 30,
+                  actions: <Widget>[
+                    TextButton(
+                      child: Text(
+                        'Ok'.tr,
+                        style: TextStyle(color: GlobalVar.to.primaryText),
+                      ),
+                      onPressed: () async {
+                        Get.back();
+                      },
+                    ),
+                  ],
+                );
         },
         child: Card(
           color: GlobalVar.to.primaryCard,
@@ -627,8 +657,8 @@ class MainController extends GetxController {
                                   alignment: Alignment.centerLeft,
                                   child: Text(
                                     '${snapshot.data!.docs[index]['menuName']}',
-                                    style: const TextStyle(
-                                        color: Colors.black,
+                                    style: TextStyle(
+                                        color: GlobalVar.to.colorText,
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold),
                                   ),
@@ -644,10 +674,9 @@ class MainController extends GetxController {
                                   alignment: Alignment.centerLeft,
                                   child: Text(
                                     '${snapshot.data!.docs[index]['menuDescription']}',
-                                    style: const TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold),
+                                    style: TextStyle(
+                                        color: GlobalVar.to.primaryText,
+                                        fontWeight: FontWeight.normal),
                                   ),
                                 ),
                               )
@@ -661,35 +690,10 @@ class MainController extends GetxController {
                                   alignment: Alignment.centerLeft,
                                   child: Text(
                                     '${snapshot.data!.docs[index]['menuCategoryName']}',
-                                    style: const TextStyle(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.bold),
+                                    style: TextStyle(
+                                        color: GlobalVar.to.colorText,
+                                        fontWeight: FontWeight.normal),
                                   ),
-                                ),
-                              )
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Expanded(
-                                flex: 2,
-                                child: Align(
-                                  alignment: Alignment.centerLeft,
-                                  child:
-                                      '${snapshot.data!.docs[index]['menuStatus']}' ==
-                                              'true'
-                                          ? Text(
-                                              '',
-                                              style: const TextStyle(
-                                                  color: Colors.green,
-                                                  fontWeight: FontWeight.bold),
-                                            )
-                                          : Text(
-                                              'Out of stock'.tr,
-                                              style: const TextStyle(
-                                                  color: Colors.red,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
                                 ),
                               )
                             ],
@@ -702,12 +706,37 @@ class MainController extends GetxController {
                                   alignment: Alignment.centerRight,
                                   child: Text(
                                     //  '${snapshot.data!.docs[index]['menuPrice']}',
-                                    '${saldo.format(int.parse(snapshot.data!.docs[index]['menuPrice'].toString()))}',
-                                    style: const TextStyle(
-                                        color: Colors.black,
+                                    'Rp. ${saldo.format(int.parse(snapshot.data!.docs[index]['menuPrice'].toString()))}',
+                                    style: TextStyle(
+                                        color: GlobalVar.to.colorText,
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold),
                                   ),
+                                ),
+                              )
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                flex: 2,
+                                child: Align(
+                                  alignment: Alignment.centerRight,
+                                  child:
+                                      '${snapshot.data!.docs[index]['menuStatus']}' ==
+                                              'true'
+                                          ? Text(
+                                              '',
+                                              style: const TextStyle(
+                                                  color: Colors.green,
+                                                  fontWeight: FontWeight.bold),
+                                            )
+                                          : Text(
+                                              'Out of stock'.tr,
+                                              style: const TextStyle(
+                                                  color: Colors.grey,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
                                 ),
                               )
                             ],

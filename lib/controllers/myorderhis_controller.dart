@@ -6,14 +6,8 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:restoresto_repo/controllers/main_controller.dart';
-import 'package:restoresto_repo/views/myorder_detail_page.dart';
-import '../database/resto_db.dart';
-import '../helper/firebase_auth_constants.dart';
 import '../helper/global_var.dart';
-import 'package:camera/camera.dart';
 
-import '../utils/dynamic_link_service.dart';
 import '../views/myorderhis_detail_page.dart';
 
 class MyorderhisController extends GetxController {
@@ -22,7 +16,9 @@ class MyorderhisController extends GetxController {
   RxString qr = ''.obs;
   RxBool camstate = false.obs;
   late String _scanBarcode = 'Unknown';
-  var f = DateFormat('dd MMM yyyy hh:mm');
+  var f = DateFormat('dd MMM yyyy hh:mm a');
+  final saldo = NumberFormat.currency(
+      locale: 'id_ID', customPattern: '#,###', symbol: 'Rp.', decimalDigits: 0);
 
   String scannedQrcode = '';
 
@@ -230,7 +226,7 @@ class MyorderhisController extends GetxController {
           userBox.write(
               'editmerchantid', snapshot.data!.docs[index]['merchantID']);
 
-          Get.to(() => MyorderhisDetailPage());
+          Get.toNamed('myorderhisdetail');
         },
         child: Card(
           color: Colors.white,
@@ -254,9 +250,9 @@ class MyorderhisController extends GetxController {
                             f.format(DateTime.fromMillisecondsSinceEpoch(
                                 snapshot.data!.docs[index]["icreatedAt"] *
                                     1000)),
-                            style: const TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.normal),
+                            style: TextStyle(
+                                color: GlobalVar.to.colorText,
+                                fontWeight: FontWeight.bold),
                           ),
                         ),
                       ),
@@ -264,13 +260,21 @@ class MyorderhisController extends GetxController {
                         flex: 1,
                         child: Align(
                           alignment: Alignment.topRight,
-                          child: Text(
-                            '${snapshot.data!.docs[index]['tableNumber']}',
-                            style: const TextStyle(
-                                fontSize: 20,
-                                color: Colors.red,
-                                fontWeight: FontWeight.bold),
-                          ),
+                          child:
+                              '${snapshot.data!.docs[index]['tableNumber']}' !=
+                                      'null'
+                                  ? Text(
+                                      'Meja : ${snapshot.data!.docs[index]['tableNumber']}',
+                                      style: const TextStyle(
+                                          color: Colors.red,
+                                          fontWeight: FontWeight.normal),
+                                    )
+                                  : Text(
+                                      ' -',
+                                      style: const TextStyle(
+                                          color: Colors.red,
+                                          fontWeight: FontWeight.bold),
+                                    ),
                         ),
                       )
                     ],
@@ -283,8 +287,8 @@ class MyorderhisController extends GetxController {
                           alignment: Alignment.centerLeft,
                           child: Text(
                             '${snapshot.data!.docs[index]['icreatedAt']}',
-                            style: const TextStyle(
-                                color: Colors.black,
+                            style: TextStyle(
+                                color: GlobalVar.to.primaryText,
                                 fontWeight: FontWeight.normal),
                           ),
                         ),
@@ -331,15 +335,23 @@ class MyorderhisController extends GetxController {
                           ),
                         ),
                       ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    children: [
                       Expanded(
                         flex: 1,
                         child: Align(
                           alignment: Alignment.bottomRight,
                           child: Text(
-                            '${snapshot.data!.docs[index]['orderTotal']}',
-                            style: const TextStyle(
+                            //    '${snapshot.data!.docs[index]['orderTotal']}',
+                            'Rp. ${saldo.format(int.parse(userBox.read('ordertotal').toString()))}',
+                            style: TextStyle(
                                 fontSize: 18,
-                                color: Colors.red,
+                                color: GlobalVar.to.colorText,
                                 fontWeight: FontWeight.bold),
                           ),
                         ),

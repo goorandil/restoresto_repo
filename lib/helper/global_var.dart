@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:intl/intl.dart';
 
 final userBox = GetStorage();
 final packageBox = GetStorage();
 final orderBox = GetStorage();
 final topupBox = GetStorage();
+
+final saldo = NumberFormat.currency(
+    locale: 'id_ID', customPattern: '#,###', symbol: 'Rp.', decimalDigits: 0);
 
 List<dynamic> shopcartList = [].obs;
 
@@ -59,9 +63,10 @@ class GlobalVar extends GetxController {
   RxString accountnamex = "Kurirku".obs;
   RxString accountnumberx = "123123123123".obs;
 
-  var primary = Colors.red;
+  var primary = Color.fromARGB(255, 4, 132, 168);
   var primaryButton = Colors.red;
-  var primaryText = Colors.red;
-  var primaryBg = Colors.white;
+  var primaryText = Colors.black;
+  var colorText = Color.fromARGB(255, 4, 132, 168);
+  var primaryBg = Colors.grey[100];
   var primaryCard = Colors.white;
 }

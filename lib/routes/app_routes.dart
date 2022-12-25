@@ -6,4 +6,8 @@ class AppRoutes {
   static const profile = '/profile';
   static const shoppingcart = '/shoppingcart';
   static const checkout = '/checkout';
+  static const myorder = '/myorder';
+  static const myorderdetail = '/myorderdetail';
+  static const myorderhis = '/myorderhis';
+  static const myorderhisdetail = '/myorderhisdetail';
 }

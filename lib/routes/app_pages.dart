@@ -4,6 +4,10 @@ import '../binding/checkout_binding.dart';
 import '../binding/login_binding.dart';
 import '../binding/main_binding.dart';
 import '../binding/myaccount_binding.dart';
+import '../binding/myorder_binding.dart';
+import '../binding/myorderhis_binding.dart';
+import '../binding/myorder_detail_binding.dart';
+import '../binding/myorderhis_detail_binding.dart';
 import '../binding/profile_binding.dart';
 import '../binding/resto_binding.dart';
 import '../binding/shopping_cart_binding.dart';
@@ -11,6 +15,10 @@ import '../views/checkout_page.dart';
 import '../views/login_page.dart';
 import '../views/main_page.dart';
 import '../views/myaccount_page.dart';
+import '../views/myorder_detail_page.dart';
+import '../views/myorder_page.dart';
+import '../views/myorderhis_detail_page.dart';
+import '../views/myorderhis_page.dart';
 import '../views/profile_page.dart';
 import '../views/resto_page.dart';
 import '../views/shopping_cart_page.dart';
@@ -47,6 +55,26 @@ class AppPages {
       name: AppRoutes.checkout,
       page: () => const CheckoutPage(),
       binding: CheckoutBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.myorder,
+      page: () => const MyorderPage(),
+      binding: MyorderBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.myorderdetail,
+      page: () => const MyorderDetailPage(),
+      binding: MyorderDetailBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.myorderhis,
+      page: () => const MyorderhisPage(),
+      binding: MyorderhisBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.myorderhisdetail,
+      page: () => const MyorderhisDetailPage(),
+      binding: MyorderhisDetailBinding(),
     ),
   ];
 }

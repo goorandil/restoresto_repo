@@ -77,7 +77,7 @@ class LoginDb {
         'updatedAt': DateTime.now(),
         'iupdatedAt': DateTime.now().millisecondsSinceEpoch,
         'isDone': false,
-        'app': 'resto resto waiter',
+        'app': 'restonomous waiter',
         'userCat': 'waiter',
         'waiterAddress': '',
         'waiterPhone': '',

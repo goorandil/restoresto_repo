@@ -209,13 +209,13 @@ class MainPage extends StatelessWidget {
                             height: 95,
                             child: Card(
                               color: GlobalVar.to.primaryCard,
-                              elevation: 5,
+                              elevation: 3,
                               clipBehavior: Clip.antiAlias,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10.0),
                               ),
                               child: Container(
-                                padding: EdgeInsets.fromLTRB(15, 15, 15, 0),
+                                padding: EdgeInsets.fromLTRB(15, 15, 5, 0),
                                 child: Row(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     crossAxisAlignment:
@@ -288,9 +288,10 @@ class MainPage extends StatelessWidget {
                                                                   .merchantnamex
                                                                   .value,
                                                               maxLines: 1,
-                                                              style: const TextStyle(
-                                                                  color: Colors
-                                                                      .black,
+                                                              style: TextStyle(
+                                                                  color: GlobalVar
+                                                                      .to
+                                                                      .colorText,
                                                                   fontSize: 17,
                                                                   fontWeight:
                                                                       FontWeight
@@ -313,12 +314,13 @@ class MainPage extends StatelessWidget {
                                                                   .merchantaddressx
                                                                   .value,
                                                               maxLines: 2,
-                                                              style: const TextStyle(
-                                                                  color: Colors
-                                                                      .black,
+                                                              style: TextStyle(
+                                                                  color: GlobalVar
+                                                                      .to
+                                                                      .primaryText,
                                                                   fontWeight:
                                                                       FontWeight
-                                                                          .bold),
+                                                                          .normal),
                                                             ),
                                                           ),
                                                         )
@@ -586,10 +588,8 @@ class MainPage extends StatelessWidget {
                                                                     style: TextStyle(
                                                                         color: Colors
                                                                             .red,
-                                                                        fontSize:
-                                                                            18,
                                                                         fontWeight:
-                                                                            FontWeight.bold),
+                                                                            FontWeight.normal),
                                                                   ),
                                                                 )),
                                                           ],
@@ -616,9 +616,8 @@ class MainPage extends StatelessWidget {
                                                                           textAlign:
                                                                               TextAlign.left,
                                                                           style: TextStyle(
-                                                                              color: Colors.black,
-                                                                              fontSize: 18,
-                                                                              fontWeight: FontWeight.bold),
+                                                                              color: GlobalVar.to.primaryText,
+                                                                              fontWeight: FontWeight.normal),
                                                                         )),
                                                                     onPressed: () {
                                                                       controller
@@ -673,7 +672,7 @@ class MainPage extends StatelessWidget {
                                                                           },
                                                                           child: Text(
                                                                               GlobalVar.to.categorylistx[index]['categoryName'],
-                                                                              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                                                                              style: TextStyle(color: GlobalVar.to.primaryText, fontWeight: FontWeight.normal)),
                                                                         ),
                                                                       ),
                                                                     ),
@@ -728,7 +727,7 @@ class MainPage extends StatelessWidget {
                                           ),
                                           onTap: () {
                                             print("Tapped on container 2");
-                                            Get.to(() => MyorderPage());
+                                            Get.toNamed('myorder');
                                           },
                                         )),
                                   ),

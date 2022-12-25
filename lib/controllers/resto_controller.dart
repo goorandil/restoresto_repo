@@ -5,6 +5,7 @@ import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../database/resto_db.dart';
 import '../helper/firebase_auth_constants.dart';
@@ -308,6 +309,22 @@ class RestoController extends GetxController {
                                 RestoDb.deleteMymerchant(snapshot.data!.id);
                               },
                             ),
+                            TextButton(
+                              child: Text(
+                                'Share'.tr,
+                                style:
+                                    TextStyle(color: GlobalVar.to.primaryText),
+                              ),
+                              onPressed: () {
+                                final RenderBox box =
+                                    context.findRenderObject() as RenderBox;
+                                Share.share('https://restoresto.page.link/45x7',
+                                    subject: 'Restonomous',
+                                    sharePositionOrigin:
+                                        box.localToGlobal(Offset.zero) &
+                                            box.size);
+                              },
+                            ),
                           ],
                         );
                       },
@@ -368,8 +385,9 @@ class RestoController extends GetxController {
                                                         snapshot.data!.get(
                                                                 'merchantName') ??
                                                             "",
-                                                        style: const TextStyle(
-                                                            color: Colors.black,
+                                                        style: TextStyle(
+                                                            color: GlobalVar
+                                                                .to.colorText,
                                                             fontSize: 18,
                                                             fontWeight:
                                                                 FontWeight
@@ -390,12 +408,12 @@ class RestoController extends GetxController {
                                                         snapshot.data!.get(
                                                                 'merchantAddress') ??
                                                             "",
-                                                        style: const TextStyle(
-                                                            color: Colors.black,
-                                                            fontSize: 16,
+                                                        style: TextStyle(
+                                                            color: GlobalVar
+                                                                .to.primaryText,
                                                             fontWeight:
                                                                 FontWeight
-                                                                    .bold),
+                                                                    .normal),
                                                       ),
                                                     ),
                                                   )
@@ -410,8 +428,9 @@ class RestoController extends GetxController {
                                                           Alignment.centerLeft,
                                                       child: Text(
                                                         '${snapshot.data!.get('merchantPhone')}',
-                                                        style: const TextStyle(
-                                                            color: Colors.black,
+                                                        style: TextStyle(
+                                                            color: GlobalVar
+                                                                .to.primaryText,
                                                             fontWeight:
                                                                 FontWeight
                                                                     .normal),

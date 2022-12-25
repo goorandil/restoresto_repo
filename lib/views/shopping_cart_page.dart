@@ -1,21 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:restoresto_repo/controllers/checkout_controller.dart';
-import 'package:restoresto_repo/database/main_db.dart';
-import 'package:restoresto_repo/helper/firebase_auth_constants.dart';
-import 'package:restoresto_repo/views/checkout_page.dart';
-import 'package:restoresto_repo/views/profile_page.dart';
 
 import '../controllers/main_controller.dart';
-import '../controllers/resto_controller.dart';
 import '../controllers/shopping_cart_controller.dart';
-import '../database/resto_db.dart';
-import '../database/shopping_cart_db.dart';
 import '../helper/global_var.dart';
 import '../helper/page_app_bar.dart';
-import 'addresto_page.dart';
-import 'main_page.dart';
 
 class ShoppingCartPage extends StatelessWidget {
   const ShoppingCartPage({Key? key}) : super(key: key);
@@ -147,9 +136,10 @@ class ShoppingCartPage extends StatelessWidget {
                                                                             .centerLeft,
                                                                     child: Text(
                                                                       '${shopcartList[index]['menuname']}',
-                                                                      style: const TextStyle(
-                                                                          color: Colors
-                                                                              .black,
+                                                                      style: TextStyle(
+                                                                          color: GlobalVar
+                                                                              .to
+                                                                              .colorText,
                                                                           fontSize:
                                                                               18,
                                                                           fontWeight:
@@ -169,13 +159,12 @@ class ShoppingCartPage extends StatelessWidget {
                                                                             .centerLeft,
                                                                     child: Text(
                                                                       '${shopcartList[index]['menudescription']}',
-                                                                      style: const TextStyle(
-                                                                          color: Colors
-                                                                              .black,
-                                                                          fontSize:
-                                                                              16,
+                                                                      style: TextStyle(
+                                                                          color: GlobalVar
+                                                                              .to
+                                                                              .primaryText,
                                                                           fontWeight:
-                                                                              FontWeight.bold),
+                                                                              FontWeight.normal),
                                                                     ),
                                                                   ),
                                                                 )
@@ -192,11 +181,12 @@ class ShoppingCartPage extends StatelessWidget {
                                                                     child: Text(
                                                                       // '${shopcartList[index]['menuprice']}',
                                                                       'Rp. ${controller.saldo.format(int.parse(shopcartList[index]['menuprice'].toString()))}',
-                                                                      style: const TextStyle(
-                                                                          color: Colors
-                                                                              .red,
+                                                                      style: TextStyle(
+                                                                          color: GlobalVar
+                                                                              .to
+                                                                              .colorText,
                                                                           fontWeight:
-                                                                              FontWeight.bold),
+                                                                              FontWeight.normal),
                                                                     ),
                                                                   ),
                                                                 )
@@ -221,6 +211,9 @@ class ShoppingCartPage extends StatelessWidget {
                                                                   ),
                                                                 )
                                                               ],
+                                                            ),
+                                                            SizedBox(
+                                                              height: 10,
                                                             ),
                                                             Row(
                                                               children: [
@@ -296,7 +289,7 @@ class ShoppingCartPage extends StatelessWidget {
                                                                               .bold,
                                                                       color: GlobalVar
                                                                           .to
-                                                                          .primaryText),
+                                                                          .colorText),
                                                                 ),
                                                                 Row(
                                                                   mainAxisAlignment:

@@ -1,15 +1,9 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
-import 'package:image_picker/image_picker.dart';
 import '../controllers/checkout_controller.dart';
-import '../controllers/profile_controller.dart';
 import '../helper/global_var.dart';
 import '../helper/page_app_bar.dart';
-import 'myaccount_page.dart';
 
 class CheckoutPage extends StatelessWidget {
   const CheckoutPage({Key? key}) : super(key: key);
@@ -73,7 +67,7 @@ class CheckoutPage extends StatelessWidget {
                                       'Rp. ${controller.saldo.format(int.parse(userBox.read('ordertotal').toString()))}',
                                       style: TextStyle(
                                           fontSize: 16,
-                                          color: Colors.black,
+                                          color: GlobalVar.to.colorText,
                                           fontWeight: FontWeight.bold),
                                     ),
                                   ),
@@ -100,7 +94,7 @@ class CheckoutPage extends StatelessWidget {
                                       '${userBox.read('username')}',
                                       style: TextStyle(
                                           fontSize: 16,
-                                          color: Colors.black,
+                                          color: GlobalVar.to.colorText,
                                           fontWeight: FontWeight.bold),
                                     ),
                                   ),
@@ -118,10 +112,22 @@ class CheckoutPage extends StatelessWidget {
                                     style: TextStyle(
                                         fontSize: 20,
                                         fontWeight: FontWeight.bold),
-                                    keyboardType: TextInputType.number,
+                                    keyboardType:
+                                        const TextInputType.numberWithOptions(
+                                            signed: false, decimal: false),
+                                    inputFormatters: [
+                                      FilteringTextInputFormatter.digitsOnly,
+                                      FilteringTextInputFormatter.allow(
+                                          RegExp("[0-9\u0660-\u0669]")),
+                                      FilteringTextInputFormatter.deny(
+                                          RegExp(r'^0+')),
+                                    ],
                                     onChanged: controller
                                         .tablenumberChanged, // controller func
                                     decoration: InputDecoration(
+                                        hintText:
+                                            "Kalau tidak ada, biarkan kosong",
+                                        hintStyle: TextStyle(fontSize: 14),
                                         labelText: 'Table Number'.tr,
                                         labelStyle: TextStyle(
                                             color: GlobalVar.to.primary),

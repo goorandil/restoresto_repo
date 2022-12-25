@@ -92,8 +92,8 @@ class MyorderDetailController extends GetxController {
                                     alignment: Alignment.centerLeft,
                                     child: Text(
                                       '${snapshot.data!.docs[index]['menuName']}',
-                                      style: const TextStyle(
-                                          color: Colors.black,
+                                      style: TextStyle(
+                                          color: GlobalVar.to.colorText,
                                           fontSize: 18,
                                           fontWeight: FontWeight.bold),
                                     ),
@@ -109,10 +109,9 @@ class MyorderDetailController extends GetxController {
                                     alignment: Alignment.centerLeft,
                                     child: Text(
                                       '${snapshot.data!.docs[index]['menuDescription']}',
-                                      style: const TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold),
+                                      style: TextStyle(
+                                          color: GlobalVar.to.primaryText,
+                                          fontWeight: FontWeight.normal),
                                     ),
                                   ),
                                 )
@@ -127,9 +126,9 @@ class MyorderDetailController extends GetxController {
                                     child: Text(
                                       //  '${snapshot.data!.docs[index]['menuPrice']}',
                                       'Rp. ${saldo.format(int.parse(snapshot.data!.docs[index]['menuPrice'].toString()))}',
-                                      style: const TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.bold),
+                                      style: TextStyle(
+                                          color: GlobalVar.to.colorText,
+                                          fontWeight: FontWeight.normal),
                                     ),
                                   ),
                                 )
@@ -143,13 +142,16 @@ class MyorderDetailController extends GetxController {
                                     alignment: Alignment.centerLeft,
                                     child: Text(
                                       '${'Qty'.tr} : ${snapshot.data!.docs[index]['qty']}',
-                                      style: const TextStyle(
-                                          color: Colors.black,
+                                      style: TextStyle(
+                                          color: GlobalVar.to.primaryText,
                                           fontWeight: FontWeight.bold),
                                     ),
                                   ),
                                 )
                               ],
+                            ),
+                            SizedBox(
+                              height: 10,
                             ),
                             Row(
                               children: [
@@ -160,9 +162,9 @@ class MyorderDetailController extends GetxController {
                                     child: Text(
                                       //   '${snapshot.data!.docs[index]['sumtot']}',
                                       'Rp. ${saldo.format(int.parse(snapshot.data!.docs[index]['sumtot'].toString()))}',
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                           fontSize: 18,
-                                          color: Colors.red,
+                                          color: GlobalVar.to.colorText,
                                           fontWeight: FontWeight.bold),
                                     ),
                                   ),
