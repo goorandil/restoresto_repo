@@ -35,7 +35,7 @@ class RestoDb {
     print('takeResto merchantid ${userBox.read('editmerchantid')}');
 
     if ('${userBox.read('editrestoid')}' != '${userBox.read('restoid')}') {
-      shopcartList.clear();
+      GlobalVar.to.shopcartList.clear();
       //  MainController.to.numshopcart.value = 0;
     }
     userBox.write('restoid', '${userBox.read('editrestoid')}');
@@ -55,7 +55,7 @@ class RestoDb {
 
     if ('${userBox.read('editmerchantid')}' !=
         '${GlobalVar.to.merchantidx.value}') {
-      shopcartList.clear();
+      GlobalVar.to.shopcartList.clear();
       //  MainController.to.numshopcart.value = 0;
     }
     GlobalVar.to.merchantidx.value = '${userBox.read('editmerchantid')}';

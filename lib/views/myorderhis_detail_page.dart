@@ -6,7 +6,6 @@ import 'package:restoresto_repo/database/myorder_db.dart';
 import '../controllers/myorderhis_detail_controller.dart';
 import '../helper/global_var.dart';
 import '../helper/page_app_bar.dart';
-import 'myorderhis_page.dart';
 
 class MyorderhisDetailPage extends StatelessWidget {
   const MyorderhisDetailPage({Key? key}) : super(key: key);

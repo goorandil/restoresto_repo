@@ -94,7 +94,7 @@ class CheckoutDb {
           .doc(value.id)
           .set(orderData);
       int packageIdx = 0;
-      shopcartList.forEach((element) {
+      GlobalVar.to.shopcartList.forEach((element) {
         print('placeOrder $element');
         packageIdx = packageIdx + 1;
 
@@ -139,11 +139,11 @@ class CheckoutDb {
               .doc(valuex.id)
               .set(orderdetailData)
               .whenComplete(() {
-            print('shopcartList $shopcartList');
+            print('shopcartList ${GlobalVar.to.shopcartList}');
             print('restoid ada ${userBox.read('restoid')}');
-            shopcartList.clear();
+            GlobalVar.to.shopcartList.clear();
             //    MainController.to.numshopcart.value = 0;
-            print('shopcartList $shopcartList');
+            print('shopcartList ${GlobalVar.to.shopcartList}');
             print('restoid ada ${userBox.read('restoid')}');
           });
         });

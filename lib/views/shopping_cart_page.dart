@@ -54,15 +54,16 @@ class ShoppingCartPage extends StatelessWidget {
                                   fontWeight: FontWeight.bold),
                             )
                           ])),
-                      shopcartList.isNotEmpty
+                      GlobalVar.to.shopcartList.isNotEmpty
                           ? Expanded(
                               child: ListView.builder(
                                   physics: const BouncingScrollPhysics(),
-                                  key: Key(shopcartList.length.toString()),
+                                  key: Key(GlobalVar.to.shopcartList.length
+                                      .toString()),
                                   shrinkWrap: true,
                                   padding:
                                       const EdgeInsets.fromLTRB(10, 0, 10, 10),
-                                  itemCount: shopcartList.length,
+                                  itemCount: GlobalVar.to.shopcartList.length,
                                   itemBuilder: (context, index) {
                                     return InkWell(
                                         onTap: () {},
@@ -86,22 +87,23 @@ class ShoppingCartPage extends StatelessWidget {
                                                   children: [
                                                     Expanded(
                                                       flex: 2,
-                                                      child: shopcartList
+                                                      child: GlobalVar
+                                                              .to
+                                                              .shopcartList
                                                               .isNotEmpty
                                                           ? ClipRRect(
                                                               borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          8.0),
+                                                                  BorderRadius.circular(
+                                                                      8.0),
                                                               child: Image.network(
-                                                                  '${shopcartList[index]['menuimageurl']}',
+                                                                  '${GlobalVar.to.shopcartList[index]['menuimageurl']}',
                                                                   width: 45.0,
                                                                   fit: BoxFit
                                                                       .fitWidth,
-                                                                  loadingBuilder: (BuildContext
-                                                                          context,
-                                                                      Widget child,
-                                                                      ImageChunkEvent? loadingProgress) {
+                                                                  loadingBuilder:
+                                                                      (BuildContext context,
+                                                                          Widget child,
+                                                                          ImageChunkEvent? loadingProgress) {
                                                                 if (loadingProgress ==
                                                                     null) {
                                                                   return child;
@@ -135,7 +137,7 @@ class ShoppingCartPage extends StatelessWidget {
                                                                         Alignment
                                                                             .centerLeft,
                                                                     child: Text(
-                                                                      '${shopcartList[index]['menuname']}',
+                                                                      '${GlobalVar.to.shopcartList[index]['menuname']}',
                                                                       style: TextStyle(
                                                                           color: GlobalVar
                                                                               .to
@@ -158,7 +160,7 @@ class ShoppingCartPage extends StatelessWidget {
                                                                         Alignment
                                                                             .centerLeft,
                                                                     child: Text(
-                                                                      '${shopcartList[index]['menudescription']}',
+                                                                      '${GlobalVar.to.shopcartList[index]['menudescription']}',
                                                                       style: TextStyle(
                                                                           color: GlobalVar
                                                                               .to
@@ -180,7 +182,7 @@ class ShoppingCartPage extends StatelessWidget {
                                                                             .centerLeft,
                                                                     child: Text(
                                                                       // '${shopcartList[index]['menuprice']}',
-                                                                      'Rp. ${controller.saldo.format(int.parse(shopcartList[index]['menuprice'].toString()))}',
+                                                                      'Rp. ${controller.saldo.format(int.parse(GlobalVar.to.shopcartList[index]['menuprice'].toString()))}',
                                                                       style: TextStyle(
                                                                           color: GlobalVar
                                                                               .to
@@ -201,7 +203,7 @@ class ShoppingCartPage extends StatelessWidget {
                                                                         Alignment
                                                                             .centerLeft,
                                                                     child: Text(
-                                                                      '${'Qty'.tr} : ${shopcartList[index]['qty']}',
+                                                                      '${'Qty'.tr} : ${GlobalVar.to.shopcartList[index]['qty']}',
                                                                       style: const TextStyle(
                                                                           color: Colors
                                                                               .black,
@@ -225,7 +227,7 @@ class ShoppingCartPage extends StatelessWidget {
                                                                             .topRight,
                                                                     child: Text(
                                                                       // '${shopcartList[index]['sumtot'].toString()}',
-                                                                      'Rp. ${controller.saldo.format(int.parse(shopcartList[index]['sumtot'].toString()))}',
+                                                                      'Rp. ${controller.saldo.format(int.parse(GlobalVar.to.shopcartList[index]['sumtot'].toString()))}',
                                                                       style: const TextStyle(
                                                                           fontSize:
                                                                               18,
@@ -259,10 +261,10 @@ class ShoppingCartPage extends StatelessWidget {
                                                         onPressed: () {
                                                           MainController.to.qty
                                                                   .value =
-                                                              int.parse(
-                                                                  shopcartList[
-                                                                          index]
-                                                                      ['qty']);
+                                                              int.parse(GlobalVar
+                                                                      .to
+                                                                      .shopcartList[
+                                                                  index]['qty']);
                                                           Get.defaultDialog(
                                                             titlePadding:
                                                                 const EdgeInsets

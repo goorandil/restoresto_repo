@@ -1,32 +1,27 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:basic_utils/basic_utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:intl/date_symbol_data_custom.dart';
-import 'package:intl/date_symbol_data_local.dart';
-import 'package:intl/date_time_patterns.dart';
+import 'package:in_app_update/in_app_update.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:new_version/new_version.dart';
 import 'package:restoresto_repo/helper/firebase_auth_constants.dart';
-import 'package:url_launcher/url_launcher.dart';
 import '../database/main_db.dart';
 import '../helper/global_var.dart';
 import '../main.dart';
-import '../utils/dynamic_link_service.dart';
 import '../views/resto_page.dart';
 
 class MainController extends GetxController {
@@ -59,20 +54,24 @@ class MainController extends GetxController {
     update();
   }
 
-  final saldo = NumberFormat.currency(
-      locale: 'id_ID', customPattern: '#,###', symbol: 'Rp.', decimalDigits: 0);
   final newVersion = NewVersion(
     iOSId: 'com.bingkaiapp.restoresto',
     androidId: 'com.bingkaiapp.restoresto',
   );
+  late DateFormat dateFormat;
 
   //// start push notif
+  ///
+  ///
+  FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
+
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
-  ///// end push notif
 
-  FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
-  late DateFormat dateFormat;
+  ///// end push notif
+  ///
+  ///
+
 /*
   void setupWorkManager() async {
     debugPrint('setupWorkManager');
@@ -87,19 +86,21 @@ class MainController extends GetxController {
     MainDb.updateFcmToken(fcmToken);
 
 //////start messaging
+    ///
+    ///
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       RemoteNotification? notification = message.notification;
       AndroidNotification? android = message.notification?.android;
 
       debugPrint(message.notification!.title.toString());
       debugPrint(message.notification!.body.toString());
-      debugPrint('FirebaseMessaging onMessage $notification.body');
-      debugPrint('FirebaseMessaging onMessage $android');
+      debugPrint('FirebaseMessaging onMessage ${notification!.body}');
+      debugPrint('FirebaseMessaging onMessage ${notification.title}');
       debugPrint(
           'FirebaseMessaging ${message.data}'); // If `onMessage` is triggered with a notification, construct our own
       const AndroidNotificationDetails androidNotificationDetails =
-          AndroidNotificationDetails('your channel id', 'your channel name',
-              channelDescription: 'your channel description',
+          AndroidNotificationDetails('soundid2', 'soundname2',
+              channelDescription: 'restonomous',
               importance: Importance.max,
               priority: Priority.high,
               ticker: 'ticker');
@@ -127,6 +128,8 @@ class MainController extends GetxController {
       //       arguments: MessageArguments(message, true));
     });
 
+    FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+
     //final pushNotificationService = PushNotificationService(firebaseMessaging);
     //pushNotificationService.initialise();
     //  await _configureLocalTimeZone();
@@ -146,7 +149,6 @@ class MainController extends GetxController {
 
     print('User granted permission: ${settings.authorizationStatus}');
 
-    Get.put(GlobalVar());
     GlobalVar.to.categorylistx.clear();
 
     getDeepLink();
@@ -162,6 +164,24 @@ class MainController extends GetxController {
     //  _requestPermissions();
     //  _configureDidReceiveLocalNotificationSubject();
     //  _configureSelectNotificationSubject();
+  }
+
+  AppUpdateInfo? updateInfo;
+  Future<void> checkForUpdate() async {
+    InAppUpdate.checkForUpdate().then((info) {
+      updateInfo = info;
+      updateInfo?.updateAvailability == UpdateAvailability.updateAvailable
+          ? updateNow()
+          : Get.toNamed('myaccount');
+      ;
+    }).catchError((e) {
+      // showSnack(e.toString());
+    });
+  }
+
+  updateNow() {
+    InAppUpdate.performImmediateUpdate().catchError((e) => print(e));
+    update();
   }
 
   Future<void> _isAndroidPermissionGranted() async {
@@ -328,6 +348,46 @@ class MainController extends GetxController {
     );
   }
 
+  Future<void> requestPermissions() async {
+    await flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+            IOSFlutterLocalNotificationsPlugin>()
+        ?.requestPermissions(
+          alert: true,
+          badge: true,
+          sound: true,
+        );
+  }
+
+  Future<void> localNotif(title, body) async {
+    debugPrint("localNotif");
+
+    await cancelNotification();
+    await requestPermissions();
+    await _showNotification(title, body);
+    /*   final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
+    await registerMessage(
+      hour: now.hour,
+      minutes: now.minute + 1,
+      message: 'Pemesanan anda segera kami proses',
+    );
+  */
+  }
+
+  Future<void> _showNotification(title, body) async {
+    const AndroidNotificationDetails androidNotificationDetails =
+        AndroidNotificationDetails('soundid2', 'soundname2',
+            channelDescription: 'notif with sound',
+            importance: Importance.max,
+            priority: Priority.high,
+            sound: RawResourceAndroidNotificationSound('mysound'),
+            ticker: 'ticker');
+    const NotificationDetails notificationDetails =
+        NotificationDetails(android: androidNotificationDetails);
+    await flutterLocalNotificationsPlugin
+        .show(id++, title, body, notificationDetails, payload: 'item x');
+  }
+
   getUserMerchant() async => firebaseFirestore
           .collection("users")
           .doc(firebaseAuth.currentUser!.uid)
@@ -472,7 +532,7 @@ class MainController extends GetxController {
 
   getNumShopcart() {
     int? numtot = 0;
-    numtot = shopcartList.length;
+    numtot = GlobalVar.to.shopcartList.length;
     // print('getNumShopcart length ${shopcartList.length}');
     numshopcart.value = numtot;
     update();
@@ -706,7 +766,19 @@ class MainController extends GetxController {
                                   alignment: Alignment.centerRight,
                                   child: Text(
                                     //  '${snapshot.data!.docs[index]['menuPrice']}',
-                                    'Rp. ${saldo.format(int.parse(snapshot.data!.docs[index]['menuPrice'].toString()))}',
+                                    GlobalVar.to.currencyFormat.value == 0
+                                        ? '${GlobalVar.to.saldo0.format(int.parse(snapshot.data!.docs[index]['menuPrice'].toString()))}'
+                                        : GlobalVar.to.currencyFormat.value == 1
+                                            ? '${GlobalVar.to.saldo1.format(int.parse(snapshot.data!.docs[index]['menuPrice'].toString()))}'
+                                            : GlobalVar.to.currencyFormat
+                                                        .value ==
+                                                    2
+                                                ? ' ${GlobalVar.to.saldo2.format(int.parse(snapshot.data!.docs[index]['menuPrice'].toString()))}'
+                                                : GlobalVar.to.currencyFormat
+                                                            .value ==
+                                                        3
+                                                    ? 'Rp. ${GlobalVar.to.saldo3.format(int.parse(snapshot.data!.docs[index]['menuPrice'].toString()))}'
+                                                    : '',
                                     style: TextStyle(
                                         color: GlobalVar.to.colorText,
                                         fontSize: 18,
@@ -807,13 +879,13 @@ class MainController extends GetxController {
       'isumtot': sumtot,
     };
 
-    shopcartList.add(someMap);
+    GlobalVar.to.shopcartList.add(someMap);
 
     await Future.delayed(
         const Duration(seconds: 1), () => print('User account created'));
     Get.back();
     getNumShopcart();
-    print('shopcartList.length $shopcartList.length');
+    print('shopcartList.length ${GlobalVar.to.shopcartList.length}');
   }
 
   void setCat(String categoryname, String categoryid) {

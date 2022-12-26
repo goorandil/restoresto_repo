@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -6,8 +5,6 @@ import 'package:share_plus/share_plus.dart';
 import '../controllers/myaccount_controller.dart';
 import '../helper/global_var.dart';
 import '../helper/page_app_bar.dart';
-import 'main_page.dart';
-import 'profile_page.dart';
 
 class MyaccountPage extends StatelessWidget {
   const MyaccountPage({Key? key}) : super(key: key);

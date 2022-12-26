@@ -31,7 +31,7 @@ class ShoppingCartController extends GetxController {
 
   getSumTotal() {
     int? sumtot = 0;
-    shopcartList.forEach((element) {
+    GlobalVar.to.shopcartList.forEach((element) {
       sumtot = sumtot! + int.parse(element['sumtot']);
       userBox.write('sumtotstr', sumtot.toString());
     });
@@ -252,13 +252,13 @@ class ShoppingCartController extends GetxController {
 
   void updateQty(int index) {
     print('updateQty index ${index}');
-    print('updateQty qty ${shopcartList[index]['qty']}');
-    shopcartList[index]['qty'] = '${MainController.to.qty.value}';
-    int sumtot = int.parse(shopcartList[index]['qty']) *
-        int.parse('${shopcartList[index]['menuprice']}');
-    shopcartList[index]['sumtot'] = '$sumtot';
-    shopcartList[index]['isumtot'] = sumtot;
-    print('updateQty qty ${shopcartList[index]['qty']}');
+    print('updateQty qty ${GlobalVar.to.shopcartList[index]['qty']}');
+    GlobalVar.to.shopcartList[index]['qty'] = '${MainController.to.qty.value}';
+    int sumtot = int.parse(GlobalVar.to.shopcartList[index]['qty']) *
+        int.parse('${GlobalVar.to.shopcartList[index]['menuprice']}');
+    GlobalVar.to.shopcartList[index]['sumtot'] = '$sumtot';
+    GlobalVar.to.shopcartList[index]['isumtot'] = sumtot;
+    print('updateQty qty ${GlobalVar.to.shopcartList[index]['qty']}');
     update();
     Get.back();
     update();
@@ -267,13 +267,13 @@ class ShoppingCartController extends GetxController {
 
   void deleteItem(int index) {
     print('deleteItem index ${index}');
-    print('deleteItem length ${shopcartList.length}');
-    shopcartList.removeAt(index);
-    print('deleteItem length ${shopcartList.length}');
+    print('deleteItem length ${GlobalVar.to.shopcartList.length}');
+    GlobalVar.to.shopcartList.removeAt(index);
+    print('deleteItem length ${GlobalVar.to.shopcartList.length}');
     MainController.to.getNumShopcart();
     //  Get.to(() => MainPage());
     update();
-    if (shopcartList.length == 0) {
+    if (GlobalVar.to.shopcartList.length == 0) {
       Get.toNamed('/main');
     }
   }

@@ -9,7 +9,6 @@ import '../database/main_db.dart';
 import '../helper/base_app_bar.dart';
 import '../helper/global_var.dart';
 import '../helper/sign_in.dart';
-import 'myorder_page.dart';
 
 class MainPage extends StatelessWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -202,11 +201,18 @@ class MainPage extends StatelessWidget {
                                 },
                               ),
                             ),
-                          */
+                       
+                        ElevatedButton(
+                          onPressed: () async {
+                            controller.localNotif('test', 'test');
+                          },
+                          child: const Text('Show Notification'),
+                        ),
+                        */
                         Container(
                           padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
                           child: SizedBox(
-                            height: 95,
+                            height: 110,
                             child: Card(
                               color: GlobalVar.to.primaryCard,
                               elevation: 3,
@@ -268,7 +274,7 @@ class MainPage extends StatelessWidget {
                                       Obx(() => GlobalVar.to.merchantimageurlx
                                               .value.isNotEmpty
                                           ? Expanded(
-                                              flex: 3,
+                                              flex: 2,
                                               child: Column(
                                                   crossAxisAlignment:
                                                       CrossAxisAlignment.start,
@@ -757,7 +763,7 @@ class MainPage extends StatelessWidget {
                                             ],
                                           ),
                                           onTap: () {
-                                            Get.toNamed('myaccount');
+                                            controller.checkForUpdate();
                                           },
                                         )),
                                   ),

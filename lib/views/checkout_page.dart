@@ -125,8 +125,7 @@ class CheckoutPage extends StatelessWidget {
                                     onChanged: controller
                                         .tablenumberChanged, // controller func
                                     decoration: InputDecoration(
-                                        hintText:
-                                            "Kalau tidak ada, biarkan kosong",
+                                        hintText: "If not, leave it blank".tr,
                                         hintStyle: TextStyle(fontSize: 14),
                                         labelText: 'Table Number'.tr,
                                         labelStyle: TextStyle(

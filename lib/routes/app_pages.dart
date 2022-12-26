@@ -1,7 +1,6 @@
 import 'package:get/get.dart';
 
 import '../binding/checkout_binding.dart';
-import '../binding/login_binding.dart';
 import '../binding/main_binding.dart';
 import '../binding/myaccount_binding.dart';
 import '../binding/myorder_binding.dart';
@@ -12,7 +11,6 @@ import '../binding/profile_binding.dart';
 import '../binding/resto_binding.dart';
 import '../binding/shopping_cart_binding.dart';
 import '../views/checkout_page.dart';
-import '../views/login_page.dart';
 import '../views/main_page.dart';
 import '../views/myaccount_page.dart';
 import '../views/myorder_detail_page.dart';

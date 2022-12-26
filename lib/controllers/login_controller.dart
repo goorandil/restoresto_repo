@@ -6,7 +6,6 @@ import 'package:google_sign_in/google_sign_in.dart';
 import '../database/login_db.dart';
 import '../helper/firebase_auth_constants.dart';
 import '../helper/global_var.dart';
-import '../views/login_page.dart';
 
 class LoginController extends GetxController {
   final GoogleSignIn googleSignIn = GoogleSignIn();

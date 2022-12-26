@@ -455,8 +455,16 @@ class MainDb {
         GlobalVar.to.merchantaddressx.value = value.data()!['merchantAddress'];
         GlobalVar.to.merchantimageurlx.value =
             value.data()!['merchantImageurl'];
+        value.data().toString().contains('currencyFormat')
+            ? GlobalVar.to.currencyFormat.value =
+                value.data()!['currencyFormat']
+            : GlobalVar.to.currencyFormat.value = 0;
+        value.data().toString().contains('currencySymbol')
+            ? GlobalVar.to.currencySymbol.value =
+                value.data()!['currencySymbol']
+            : GlobalVar.to.currencySymbol.value = '';
 
-        //    print('$tag getMerchantData ${GlobalVar.to.merchantfcmtokenx.value}');
+        print('$tag currencyFormat ${GlobalVar.to.currencyFormat.value}');
         //     print('$tag getMerchantData ${GlobalVar.to.merchantidx.value}');
         //     print('$tag getMerchantData ${GlobalVar.to.merchantnamex.value}');
         //      print('$tag getMerchantData ${GlobalVar.to.merchantaddressx.value}');

@@ -11,6 +11,11 @@ class Languages extends Translations {
         },
         'en_US': {
           // main
+          'If not, leave it blank': 'If not, leave it blank',
+          'Name': 'Name', 'Phone': 'Phone', 'Address': 'Address',
+          'from gallery': 'from gallery',
+          'from camera': 'from camera',
+          'See all categories': 'See all categories',
           'Share': 'Share',
           'My Merchant': 'My Merchant',
           'My Order Detail': 'My Order Detail',
@@ -61,7 +66,7 @@ class Languages extends Translations {
           'Select': 'Select',
           'Delete': 'Delete',
           'Total orders': 'Total orders',
-          'Name': 'Name',
+
           'Table Number': 'Table Number',
           'Checkout': 'Checkout',
           'Notification': 'Notification',
@@ -93,6 +98,11 @@ class Languages extends Translations {
           'Complete Now?': 'Complete Now?',
         },
         'id_ID': {
+          'If not, leave it blank': 'Kalau tidak ada, biarkan kosong',
+          'Name': 'Nama', 'Phone': 'Telepon', 'Address': 'Alamat',
+          'from gallery': 'dari galeri',
+          'from camera': 'dari camera',
+          'See all categories': 'Lihat semua kategori',
           'Share': 'Bagikan',
           'My Merchant': 'Resto Favorit',
           'My Order Detail': 'Rincian Pesanan',
@@ -142,7 +152,7 @@ class Languages extends Translations {
           'Select': 'Pilih',
           'Delete': 'Hapus',
           'Total orders': 'Total pesanan',
-          'Name': 'Nama',
+
           'Table Number': 'Nomor Meja',
           'Checkout': 'Checkout',
           'Notification': 'Notifikasi',
@@ -160,7 +170,7 @@ class Languages extends Translations {
           'no resto2':
               'Belum ada resto. Klik tombol Pindai QR code, untuk menambahkan resto.',
           'Select an image from Gallery / camera':
-              'Pilih gambar dari Galeri / kamera',
+              'Pilih gambar dari galerigaleri / kamera',
 
           'no resto': 'Klik tombol Ubah, untuk memilih resto.',
           'My Profile': 'Profil',

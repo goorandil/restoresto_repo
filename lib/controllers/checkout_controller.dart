@@ -1,25 +1,15 @@
-import 'dart:io';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:intl/intl.dart';
-import 'package:path/path.dart';
 
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
-import 'package:image_cropper/image_cropper.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:http/http.dart' as http;
 import 'package:restoresto_repo/controllers/main_controller.dart';
-import 'package:restoresto_repo/controllers/myaccount_controller.dart';
-import 'package:restoresto_repo/views/main_page.dart';
 import 'package:restoresto_repo/views/shopping_cart_page.dart';
 
 import '../database/checkout_db.dart';
-import '../database/profile_db.dart';
 import '../helper/firebase_auth_constants.dart';
 import '../helper/global_var.dart';
-import '../views/myaccount_page.dart';
+import '../main.dart';
 
 class CheckoutController extends GetxController {
   RxString pageTitle = 'Checkout'.tr.obs;
@@ -133,8 +123,12 @@ class CheckoutController extends GetxController {
       await Future.delayed(const Duration(seconds: 1), () => showIndi());
       print('submitFunction');
 
-      if (shopcartList.isNotEmpty) {
+      if (GlobalVar.to.shopcartList.isNotEmpty) {
         print('submitFunction isNotEmpty');
+        localNotif(
+            'Halo, ${GlobalVar.to.usernamex.value}',
+            'Congratulations, we have received your order. We will process it immediately. Thank you'
+                .tr);
         CheckoutDb.updateOrder();
         var ordertotalstr =
             'Rp. ${saldo.format(int.parse(userBox.read('ordertotal').toString()))}';
@@ -170,6 +164,50 @@ class CheckoutController extends GetxController {
         return false;
       }
     };
+  }
+
+  Future<void> cancelNotification() async {
+    await flutterLocalNotificationsPlugin.cancelAll();
+  }
+
+  Future<void> requestPermissions() async {
+    await flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+            IOSFlutterLocalNotificationsPlugin>()
+        ?.requestPermissions(
+          alert: true,
+          badge: true,
+          sound: true,
+        );
+  }
+
+  Future<void> localNotif(title, body) async {
+    debugPrint("localNotif");
+
+    await cancelNotification();
+    await requestPermissions();
+    await _showNotification(title, body);
+    /*   final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
+    await registerMessage(
+      hour: now.hour,
+      minutes: now.minute + 1,
+      message: 'Pemesanan anda segera kami proses',
+    );
+  */
+  }
+
+  Future<void> _showNotification(title, body) async {
+    const AndroidNotificationDetails androidNotificationDetails =
+        AndroidNotificationDetails('soundid2', 'soundname2',
+            channelDescription: 'notif with sound',
+            importance: Importance.max,
+            priority: Priority.high,
+            sound: RawResourceAndroidNotificationSound('mysound'),
+            ticker: 'ticker');
+    const NotificationDetails notificationDetails =
+        NotificationDetails(android: androidNotificationDetails);
+    await flutterLocalNotificationsPlugin
+        .show(id++, title, body, notificationDetails, payload: 'item x');
   }
 
   static void orderNotifications(tablenumber, ordertotal) {

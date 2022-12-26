@@ -43,7 +43,7 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   debugPrint('firebaseMessagingBackgroundHandler ${notification.body}');
 
   const AndroidNotificationDetails androidNotificationDetails =
-      AndroidNotificationDetails('soundid1', 'soundname1',
+      AndroidNotificationDetails('soundid2', 'soundname2',
           channelDescription:
               'This channel is used for important notifications.',
           importance: Importance.max,
@@ -121,8 +121,6 @@ void notificationTapBackground(NotificationResponse notificationResponse) {
   }
 }
 
-////////////////////// end local notif
-/////////////////////
 Future<void> main() async {
   // needed if you intend to initialize in the `main` function
   WidgetsFlutterBinding.ensureInitialized();

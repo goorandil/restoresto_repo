@@ -1,10 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import '../controllers/profile_controller.dart';
 import '../helper/global_var.dart';
@@ -126,7 +124,7 @@ class ProfilePage extends StatelessWidget {
                                         icon: Icon(Icons.image,
                                             color: GlobalVar.to.primary),
                                         label: Text(
-                                          'Dari Galeri',
+                                          'from gallery'.tr,
                                           style: TextStyle(
                                               color: GlobalVar.to.primary),
                                         ),
@@ -141,7 +139,7 @@ class ProfilePage extends StatelessWidget {
                                         icon: Icon(Icons.camera,
                                             color: GlobalVar.to.primary),
                                         label: Text(
-                                          'Dari Kamera',
+                                          'from camera'.tr,
                                           style: TextStyle(
                                               color: GlobalVar.to.primary),
                                         ),
@@ -161,7 +159,7 @@ class ProfilePage extends StatelessWidget {
                                       onChanged: controller
                                           .useremailChanged, // controller func
                                       decoration: InputDecoration(
-                                          labelText: 'Email',
+                                          labelText: 'Email'.tr,
                                           labelStyle: TextStyle(
                                               color: GlobalVar.to.primary),
                                           errorText: controller
@@ -183,7 +181,7 @@ class ProfilePage extends StatelessWidget {
                                       onChanged: controller
                                           .usernameChanged, // controller func
                                       decoration: InputDecoration(
-                                          labelText: 'Nama',
+                                          labelText: 'Name'.tr,
                                           labelStyle: TextStyle(
                                               color: GlobalVar.to.primary),
                                           errorText: controller
@@ -201,7 +199,7 @@ class ProfilePage extends StatelessWidget {
                                       onChanged: controller
                                           .userphoneChanged, // controller func
                                       decoration: InputDecoration(
-                                          labelText: 'Telepon',
+                                          labelText: 'Phone'.tr,
                                           labelStyle: TextStyle(
                                               color: GlobalVar.to.primary),
                                           errorText: controller
@@ -222,7 +220,7 @@ class ProfilePage extends StatelessWidget {
                                       onChanged: controller
                                           .useraddressChanged, // controller func
                                       decoration: InputDecoration(
-                                          labelText: 'Alamat',
+                                          labelText: 'Address'.tr,
                                           labelStyle: TextStyle(
                                               color: GlobalVar.to.primary),
                                           errorText: controller

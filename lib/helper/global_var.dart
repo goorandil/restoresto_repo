@@ -8,14 +8,24 @@ final packageBox = GetStorage();
 final orderBox = GetStorage();
 final topupBox = GetStorage();
 
-final saldo = NumberFormat.currency(
-    locale: 'id_ID', customPattern: '#,###', symbol: 'Rp.', decimalDigits: 0);
-
-List<dynamic> shopcartList = [].obs;
-
 class GlobalVar extends GetxController {
   static GlobalVar get to => Get.find<GlobalVar>();
+  final saldo = NumberFormat.currency(
+      locale: 'id_ID', customPattern: '#,###', symbol: 'Rp.', decimalDigits: 0);
 
+  final saldo0 = NumberFormat.currency(
+      locale: 'id_ID', customPattern: '#,###', decimalDigits: 0);
+  final saldo1 = NumberFormat.currency(
+      locale: 'en_US', customPattern: '#,###', decimalDigits: 0);
+  final saldo2 = NumberFormat.currency(
+      locale: 'id_ID', customPattern: '#,###.0#', decimalDigits: 0);
+  final saldo3 = NumberFormat.currency(
+      locale: 'en_US', customPattern: '###.0#', decimalDigits: 0);
+
+  RxList shopcartList = [].obs;
+
+  RxInt currencyFormat = 0.obs;
+  RxString currencySymbol = "".obs;
   RxString useridx = "".obs;
   RxString usernamex = "".obs;
   RxString useremailx = "".obs;
